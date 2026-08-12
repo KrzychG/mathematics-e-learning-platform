@@ -1,0 +1,70 @@
+# Środowisko wirtualne
+venv/
+ENV/
+env/
+.venv/
+
+# Python i Bytecode 
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.files
+*.egg
+MANIFEST
+
+# Flask i baza 
+instance/
+.env
+.flaskenv
+app.db
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.sublime-workspace
+.sublime-project
+
+# System operacyjny
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Testy i Logi
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+logs/
+
+# Uploads
+app/static/uploads/avatars/*
+!app/static/uploads/avatars/.gitkeep
+
+# Tymczasowe
+scratch/
