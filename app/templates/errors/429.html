@@ -1,0 +1,12 @@
+{% extends "errors/_error_base.html" %}
+{% set error_accent = 'warning' %}
+{% set error_icon = 'bi-shield-slash-fill' %}
+{% set error_title = 'Zbyt wiele zapytań (429)' %}
+{% set error_subtitle = 'Rate Limiting' %}
+{% set error_description = 'Wykryto nadmierną liczbę zapytań w krótkim czasie.' %}
+{% block error_details %}
+<div class="alert alert-light border rounded-3 p-3 mb-4 small text-secondary">
+    <i class="bi bi-clock-history me-1"></i>
+    {{ error.description if error and error.description else 'Odczekaj kilkadziesiąt sekund przed ponowieniem próby.' }}
+</div>
+{% endblock %}

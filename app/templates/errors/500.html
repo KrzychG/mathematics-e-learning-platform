@@ -1,0 +1,14 @@
+{% extends "errors/_error_base.html" %}
+{% set error_accent = 'danger' %}
+{% set error_icon = 'bi-exclamation-triangle-fill' %}
+{% set error_title = 'Błąd serwera (500)' %}
+{% set error_subtitle = 'Wystąpił nieoczekiwany błąd wewnętrzny' %}
+{% set error_description = 'Przepraszamy, wystąpił problem podczas przetwarzania Twojego żądania.' %}
+{% block error_details %}
+    {% if config.DEBUG and error and error.description %}
+    <div class="alert alert-light border rounded-3 p-3 mb-4 small text-secondary font-monospace text-start">
+        <i class="bi bi-info-circle me-1"></i>
+        {{ error.description }}
+    </div>
+    {% endif %}
+{% endblock %}
