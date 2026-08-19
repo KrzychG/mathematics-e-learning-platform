@@ -1,0 +1,17 @@
+{% from "auth/partials/_auth_tabs.html" import render_auth_tabs %}
+{% macro render_auth_card(title, subtitle, max_width=440, active_tab=none, header_mb='4') -%}
+<div class="w-100 my-auto py-2" style="max-width: {{ max_width }}px;">
+    {% if active_tab %}
+    {{ render_auth_tabs(active_tab) }}
+    {% endif %}
+    <div class="card shadow-sm border-0 rounded-4 auth-card">
+        <div class="card-body p-4">
+            <div class="text-center mb-{{ header_mb }}">
+                <h3 class="fw-bold mb-1">{{ title }}</h3>
+                <p class="text-muted small mb-0">{{ subtitle }}</p>
+            </div>
+            {{ caller() }}
+        </div>
+    </div>
+</div>
+{%- endmacro %}

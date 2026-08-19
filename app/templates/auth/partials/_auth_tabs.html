@@ -1,0 +1,10 @@
+{% macro render_auth_tabs(active_tab='login') -%}
+<div class="auth-tabs-pill p-1 rounded-pill mb-3 d-flex">
+    <a href="{{ url_for('auth.login') }}" class="auth-tab-btn {% if active_tab == 'login' %}active {% endif %}text-decoration-none text-center flex-fill">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Zaloguj się
+    </a>
+    <a href="{{ url_for('auth.register') }}" class="auth-tab-btn {% if active_tab == 'register' %}active {% endif %}text-decoration-none text-center flex-fill">
+        <i class="bi bi-person-plus me-1"></i> Załóż konto
+    </a>
+</div>
+{%- endmacro %}
