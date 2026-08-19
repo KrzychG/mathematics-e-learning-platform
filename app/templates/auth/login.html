@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "auth/partials/_auth_card.html" import render_auth_card %}
+{% from "components/_form_field.html" import render_wtform_field %}
+{% block content %}
+{% call render_auth_card('Zaloguj się', 'Witaj ponownie w platformie Axioma', active_tab='login') %}
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        {% include '_csrf.html' %}
+        {{ render_wtform_field( form.email, label_text='ADRES E-MAIL', wrapper_class='mb-3', field_class='form-control form-control-lg bg-light border-0', field_type='email', placeholder='np. jan@student.pl', required=true, autofocus=true, error_display_block=true ) }}
+        {{ render_wtform_field( form.password, label_text='HASŁO', wrapper_class='mb-4', field_class='form-control form-control-lg bg-light border-0', placeholder='••••••••', required=true, label_action_url=url_for('auth.forgot_password'), label_action_text='Nie pamiętasz hasła?', error_display_block=true ) }}
+        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill text-white shadow-sm mb-3">
+            Zaloguj się
+        </button>
+    </form>
+    <div class="text-center text-muted small">
+        Nie masz jeszcze konta? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-bold text-primary">Zarejestruj się bezpłatnie</a>
+    </div>
+{% endcall %}
+{% endblock %}
