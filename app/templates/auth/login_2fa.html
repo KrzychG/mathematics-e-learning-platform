@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "auth/partials/_auth_card.html" import render_auth_card %}
+{% block content %}
+{% call render_auth_card('Weryfikacja dwuetapowa', 'Wprowadź 6-cyfrowy kod z Twojej aplikacji uwierzytelniającej') %}
+    <form method="POST" action="{{ url_for('auth.verify_2fa') }}">
+        {% include '_csrf.html' %}
+        <div class="mb-4">
+            <label for="totp_token" class="form-label text-muted small fw-bold tracking-wide mb-1">KOD TOTP (6 CYFR)</label>
+            <input type="text" class="form-control form-control-lg text-center fs-2 bg-light border-0 fw-bold" style="letter-spacing: 0.3em;" id="totp_token" name="totp_token" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autofocus autocomplete="one-time-code">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm mb-3">
+            Potwierdź i wejdź do panelu
+        </button>
+        <div class="text-center">
+            <a href="{{ url_for('auth.login') }}" class="text-decoration-none text-muted small">
+                <i class="bi bi-arrow-left me-1"></i> Wróć do logowania hasłem
+            </a>
+        </div>
+    </form>
+{% endcall %}
+{% endblock %}
