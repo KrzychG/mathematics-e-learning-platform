@@ -1,0 +1,7 @@
+{% macro render_local_time(dt, fmt='datetime', empty_text='-', tag='span', class_name='') -%}
+{%- if dt -%}
+<{{ tag }} class="activity-time{% if class_name %} {{ class_name }}{% endif %}" data-format="{{ fmt }}" data-utc="{{ dt | utc_iso }}">{{ dt | local_dt(fmt) }}</{{ tag }}>
+{%- else -%}
+{{ empty_text }}
+{%- endif -%}
+{%- endmacro %}
