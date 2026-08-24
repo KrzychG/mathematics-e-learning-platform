@@ -1,0 +1,51 @@
+{% macro render_pagination(pagination, endpoint, page_param='page', total_label='Łącznie pozycji', extra_params=None, aria_label='Nawigacja po stronach') %}
+{% if pagination and pagination.pages > 1 %}
+{% set base_params = extra_params if extra_params is not none else {} %}
+<div class="card-footer bg-white py-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <span class="text-muted small">
+        Strona <strong>{{ pagination.page }}</strong> z <strong>{{ pagination.pages }}</strong> ({{ total_label }}: {{ pagination.total }})
+    </span>
+    <nav aria-label="{{ aria_label }}">
+        <ul class="pagination pagination-sm mb-0">
+            {% if pagination.has_prev %}
+            {% set prev_params = base_params.copy() %}
+            {% set _ = prev_params.update({page_param: pagination.prev_num}) %}
+            <li class="page-item">
+                <a class="page-link rounded-pill px-3 me-1" href="{{ url_for(endpoint, **prev_params) }}">
+                    &laquo; Poprzednia
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link rounded-pill px-3 me-1">&laquo; Poprzednia</span></li>
+            {% endif %}
+            {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if p %}
+                    {% if p == pagination.page %}
+                    <li class="page-item active"><span class="page-link rounded-circle mx-0.5">{{ p }}</span></li>
+                    {% else %}
+                    {% set p_params = base_params.copy() %}
+                    {% set _ = p_params.update({page_param: p}) %}
+                    <li class="page-item">
+                        <a class="page-link rounded-circle mx-0.5" href="{{ url_for(endpoint, **p_params) }}">{{ p }}</a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link border-0">&hellip;</span></li>
+                {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}
+            {% set next_params = base_params.copy() %}
+            {% set _ = next_params.update({page_param: pagination.next_num}) %}
+            <li class="page-item">
+                <a class="page-link rounded-pill px-3 ms-1" href="{{ url_for(endpoint, **next_params) }}">
+                    Następna &raquo;
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link rounded-pill px-3 ms-1">Następna &raquo;</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endmacro %}

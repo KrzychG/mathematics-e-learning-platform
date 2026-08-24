@@ -1,0 +1,54 @@
+{% macro render_wtform_field(
+    field,
+    label_text=none,
+    label_class='form-label text-muted small fw-bold tracking-wide mb-1',
+    wrapper_class='mb-3',
+    field_class='form-control',
+    field_id=none,
+    field_type=none,
+    placeholder='',
+    required=false,
+    required_star=false,
+    minlength=none,
+    maxlength=none,
+    autofocus=false,
+    help_text='',
+    help_class='form-text small',
+    help_style='',
+    error_display_block=false,
+    label_action_url=none,
+    label_action_text=none
+) -%}
+{% set resolved_id = field_id if field_id else field.id %}
+{% set attrs = {'class': field_class ~ (' is-invalid' if field.errors else ''), 'id': resolved_id} %}
+{% if field_type %}{% set _ = attrs.update({'type': field_type}) %}{% endif %}
+{% if placeholder %}{% set _ = attrs.update({'placeholder': placeholder}) %}{% endif %}
+{% if required %}{% set _ = attrs.update({'required': true}) %}{% endif %}
+{% if minlength is not none %}{% set _ = attrs.update({'minlength': minlength}) %}{% endif %}
+{% if maxlength is not none %}{% set _ = attrs.update({'maxlength': maxlength}) %}{% endif %}
+{% if autofocus %}{% set _ = attrs.update({'autofocus': true}) %}{% endif %}
+<div class="{{ wrapper_class }}">
+    {% if label_action_url and label_action_text %}
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <label for="{{ resolved_id }}" class="{{ label_class | replace('mb-1', 'mb-0') }}">
+            {{ label_text if label_text is not none else field.label.text }}{% if required_star %} <span class="text-danger">*</span>{% endif %}
+        </label>
+        <a href="{{ label_action_url }}" class="small text-decoration-none text-primary fw-semibold">{{ label_action_text }}</a>
+    </div>
+    {% else %}
+    <label for="{{ resolved_id }}" class="{{ label_class }}">
+        {{ label_text if label_text is not none else field.label.text }}{% if required_star %} <span class="text-danger">*</span>{% endif %}
+    </label>
+    {% endif %}
+    {{ field(**attrs) }}
+    {% if field.errors %}
+    <div class="invalid-feedback{% if error_display_block %} d-block{% endif %}">
+        {% for error in field.errors %}
+            <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% elif help_text %}
+    <div class="{{ help_class }}"{% if help_style %} style="{{ help_style }}"{% endif %}>{{ help_text }}</div>
+    {% endif %}
+</div>
+{%- endmacro %}
