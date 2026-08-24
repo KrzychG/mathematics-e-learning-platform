@@ -1,0 +1,64 @@
+{% macro render_modal(
+    modal_id,
+    title,
+    icon_class='',
+    label_id=none,
+    title_id=none,
+    title_class='',
+    dialog_class='modal-dialog-centered',
+    content_class='border-0 shadow rounded-4',
+    header_class='border-bottom pb-3',
+    body_class='p-4',
+    body_id=none,
+    body_style=none,
+    footer_class='border-top bg-light rounded-bottom-4',
+    extra_modal_attrs=none,
+    form_id=none,
+    form_action=none,
+    has_form=true,
+    show_footer=true,
+    submit_label=none,
+    submit_btn_class='btn btn-primary btn-sm fw-semibold',
+    submit_icon_class='bi-check-lg',
+    cancel_label='Anuluj',
+    cancel_btn_class='btn btn-outline-secondary btn-sm',
+    close_label='Zamknij',
+    close_btn_class='btn btn-secondary rounded-pill px-4'
+) -%}
+{% set resolved_label_id = label_id or (modal_id ~ 'Label') %}
+{% set resolved_title_id = title_id or resolved_label_id %}
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ resolved_label_id }}" aria-hidden="true" {% if extra_modal_attrs %}{% for attr_name, attr_val in extra_modal_attrs.items() %} {{ attr_name }}="{{ attr_val }}"{% endfor %}{% endif %}>
+    <div class="modal-dialog {{ dialog_class }}">
+        <div class="modal-content {{ content_class }}">
+            <div class="modal-header {{ header_class }}">
+                <h5 class="modal-title fw-bold{% if title_class %} {{ title_class }}{% endif %}" id="{{ resolved_title_id }}">
+                    {% if icon_class %}<i class="bi {{ icon_class }} me-2"></i>{% endif %}{{ title }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            {% if has_form %}
+            <form{% if form_id %} id="{{ form_id }}"{% endif %}{% if form_action is not none %} action="{{ form_action }}"{% endif %} method="POST">
+                {% include '_csrf.html' %}
+            {% endif %}
+                <div class="modal-body {{ body_class }}"{% if body_id %} id="{{ body_id }}"{% endif %}{% if body_style %} style="{{ body_style }}"{% endif %}>
+                    {{ caller() }}
+                </div>
+                {% if show_footer %}
+                <div class="modal-footer {{ footer_class }}">
+                    {% if has_form %}
+                    <button type="button" class="{{ cancel_btn_class }}" data-bs-dismiss="modal">{{ cancel_label }}</button>
+                    <button type="submit" class="{{ submit_btn_class }}">
+                        {% if submit_icon_class %}<i class="bi {{ submit_icon_class }} me-1"></i> {% endif %}{{ submit_label }}
+                    </button>
+                    {% else %}
+                    <button type="button" class="{{ close_btn_class }}" data-bs-dismiss="modal">{{ close_label }}</button>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% if has_form %}
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{%- endmacro %}

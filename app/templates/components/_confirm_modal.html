@@ -1,0 +1,27 @@
+<div class="modal fade" id="appConfirmModal" tabindex="-1" aria-labelledby="appConfirmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-bottom px-4 py-3">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0">
+                    <span id="appConfirmModalIconWrap" class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 34px; height: 34px;">
+                        <i id="appConfirmModalIcon" class="bi bi-exclamation-triangle-fill"></i>
+                    </span>
+                    <span id="appConfirmModalTitle">Potwierdź akcję</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p id="appConfirmModalMessage" class="text-body mb-0 lh-base"></p>
+                <p id="appConfirmModalNote" class="text-muted small mt-2 mb-0 d-none"></p>
+                <div id="appConfirmModalWarning" class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-danger small mt-3 mb-0 d-none">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    <span id="appConfirmModalWarningText"></span>
+                </div>
+            </div>
+            <div class="modal-footer border-top px-4 py-3 gap-2">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Anuluj</button>
+                <button type="button" id="appConfirmModalSubmit" class="btn btn-primary rounded-pill px-4 fw-semibold">Potwierdź</button>
+            </div>
+        </div>
+    </div>
+</div>
