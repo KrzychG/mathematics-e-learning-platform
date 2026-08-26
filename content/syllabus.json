@@ -1,0 +1,467 @@
+{
+  "categories": [
+    {
+      "name": "I. Liczby rzeczywiste",
+      "folder": "01_liczby_rzeczywiste",
+      "topics": [
+        {
+          "name": "1. Działania w zbiorze liczb rzeczywistych",
+          "description": "Wykonywanie działań w zbiorze liczb rzeczywistych, kolejność działań oraz zamiana ułamków okresowych na ułamki zwykłe.",
+          "theory_file": "01_liczby_rzeczywiste/01_dzialania_w_zbiorze.md"
+        },
+        {
+          "name": "2. Dowody podzielności i reszty z dzielenia",
+          "description": "Cechy podzielności, postacie liczb całkowitych i reszt z dzielenia oraz przeprowadzanie dowodów algebraicznych podzielności.",
+          "theory_file": "01_liczby_rzeczywiste/02_dowody_podzielnosci.md"
+        },
+        {
+          "name": "3. Pierwiastki dowolnego stopnia",
+          "description": "Prawa działań na pierwiastkach, wyłączanie i włączanie czynnika oraz usuwanie niewymierności z mianownika ułamka.",
+          "theory_file": "01_liczby_rzeczywiste/03_pierwiastki_dowolnego_stopnia.md"
+        },
+        {
+          "name": "4. Związek pierwiastkowania z potęgowaniem",
+          "description": "Potęgi o wykładniku całkowitym i wymiernym, prawa działań na potęgach oraz upraszczanie wyrażeń algebraicznych.",
+          "theory_file": "01_liczby_rzeczywiste/04_zwiazek_pierwiastkowania_z_potegowaniem.md"
+        },
+        {
+          "name": "5. Monotoniczność potęgowania",
+          "description": "Porównywanie potęg o różnych podstawach i wykładnikach, monotoniczność funkcji potęgowej oraz szacowanie wartości.",
+          "theory_file": "01_liczby_rzeczywiste/05_monotonicznosc_potegowania.md"
+        },
+        {
+          "name": "6. Przedziały liczbowe i oś liczbowa",
+          "description": "Przedziały ograniczone i nieograniczone na osi liczbowej oraz operacje na zbiorach: suma, iloczyn i różnica przedziałów.",
+          "theory_file": "01_liczby_rzeczywiste/06_przedzialy_liczbowe_i_os.md"
+        },
+        {
+          "name": "7. Wartość bezwzględna i równania",
+          "description": "Definicja i interpretacja geometryczna wartości bezwzględnej jako odległości oraz rozwiązywanie równań i nierówności typu |x - a| <= r.",
+          "theory_file": "01_liczby_rzeczywiste/07_wartosc_bezwzgledna_i_rownania.md"
+        },
+        {
+          "name": "8. Procent składany, lokaty i kredyty",
+          "description": "Obliczenia procentowe, procent składany, kapitalizacja odsetek, podatek od zysków kapitałowych oraz punkty procentowe.",
+          "theory_file": "01_liczby_rzeczywiste/08_procent_skladany_lokaty.md"
+        },
+        {
+          "name": "9. Logarytmy i prawa działań",
+          "description": "Definicja logarytmu, założenia istnienia oraz stosowanie praw działań na logarytmach w obliczeniach algebraicznych.",
+          "theory_file": "01_liczby_rzeczywiste/09_logarytmy_i_prawa_dzialan.md"
+        }
+      ]
+    },
+    {
+      "name": "II. Wyrażenia algebraiczne",
+      "folder": "02_wyrazenia_algebraiczne",
+      "topics": [
+        {
+          "name": "1. Wzory skróconego mnożenia",
+          "description": "Stosowanie wzorów skróconego mnożenia stopnia drugiego i trzeciego w przekształceniach algebraicznych i dowodach.",
+          "theory_file": "02_wyrazenia_algebraiczne/01_wzory_skroconego_mnozenia.md"
+        },
+        {
+          "name": "2. Działania na wielomianach",
+          "description": "Dodawanie, odejmowanie, mnożenie wielomianów, redukcja wyrazów podobnych oraz badanie równości wielomianów.",
+          "theory_file": "02_wyrazenia_algebraiczne/02_dzialania_na_wielomianach.md"
+        },
+        {
+          "name": "3. Wyłączanie wspólnego czynnika poza nawias",
+          "description": "Rozkładanie wielomianów na czynniki metodą wyłączania wspólnego czynnika, grupowania wyrazów i wzorów skróconego mnożenia.",
+          "theory_file": "02_wyrazenia_algebraiczne/03_wylaczanie_czynnika.md"
+        },
+        {
+          "name": "4. Wyrażenia wymierne",
+          "description": "Wyznaczanie dziedziny wyrażenia wymiernego, skracanie, rozszerzanie oraz dodawanie, odejmowanie, mnożenie i dzielenie ułamków algebraicznych.",
+          "theory_file": "02_wyrazenia_algebraiczne/04_wyrazenia_wymierne.md"
+        }
+      ]
+    },
+    {
+      "name": "III. Równania i nierówności",
+      "folder": "03_rownania_i_nierownosci",
+      "topics": [
+        {
+          "name": "1. Przekształcanie równań i nierówności",
+          "description": "Przekształcenia równoważne, wyznaczanie wskazanej wielkości ze wzorów oraz zmiana zwrotu nierówności.",
+          "theory_file": "03_rownania_i_nierownosci/01_przeksztalcanie_rownan.md"
+        },
+        {
+          "name": "2. Równania i nierówności liniowe",
+          "description": "Rozwiązywanie równań i nierówności liniowych z jedną niewiadomą, klasyfikacja rozwiązań oraz interpretacja na osi liczbowej.",
+          "theory_file": "03_rownania_i_nierownosci/02_rownania_i_nierownosci_liniowe.md"
+        },
+        {
+          "name": "3. Równania i nierówności kwadratowe",
+          "description": "Rozwiązywanie równań i nierówności kwadratowych z użyciem wyróżnika delta, wzorów na pierwiastki oraz szkicu paraboli.",
+          "theory_file": "03_rownania_i_nierownosci/03_rownania_i_nierownosci_kwadratowe.md"
+        },
+        {
+          "name": "4. Równania wielomianowe",
+          "description": "Rozwiązywanie równań wielomianowych stopnia wyższego za pomocą rozkładu na czynniki i zasady iloczynu zerowego.",
+          "theory_file": "03_rownania_i_nierownosci/04_rownania_wielomianowe.md"
+        },
+        {
+          "name": "5. Równania wymierne",
+          "description": "Rozwiązywanie równań wymiernych sprowadzalnych do równań liniowych lub kwadratowych z obowiązkowym uwzględnieniem dziedziny.",
+          "theory_file": "03_rownania_i_nierownosci/05_rownania_wymierne.md"
+        }
+      ]
+    },
+    {
+      "name": "IV. Układy równań",
+      "folder": "04_uklady_rownan",
+      "topics": [
+        {
+          "name": "1. Układy równań liniowych z dwiema niewiadomymi",
+          "description": "Rozwiązywanie układów równań liniowych metodą podstawiania i przeciwnych współczynników oraz ich interpretacja geometryczna.",
+          "theory_file": "04_uklady_rownan/01_uklady_rownan_liniowych.md"
+        },
+        {
+          "name": "2. Zastosowanie układów równań w zadaniach tekstowych",
+          "description": "Modelowanie matematyczne sytuacji praktycznych za pomocą układów równań (zadania o wieku, zakupach, prędkości i stężeniach).",
+          "theory_file": "04_uklady_rownan/02_zastosowanie_w_zadaniach_tekstowych.md"
+        }
+      ]
+    },
+    {
+      "name": "V. Funkcje",
+      "folder": "05_funkcje",
+      "topics": [
+        {
+          "name": "1. Określanie funkcji (słownie, tabela, wykres, wzór)",
+          "description": "Pojęcie funkcji, sposoby jej reprezentacji, warunek jednoznaczności oraz wyznaczanie dziedziny ze wzoru.",
+          "theory_file": "05_funkcje/01_okreslanie_funkcji.md"
+        },
+        {
+          "name": "2. Obliczanie wartości funkcji ze wzoru",
+          "description": "Wyznaczanie wartości funkcji dla danego argumentu, wyznaczanie argumentu dla zadanej wartości oraz miejsc zerowych.",
+          "theory_file": "05_funkcje/02_obliczanie_wartosci_funkcji.md"
+        },
+        {
+          "name": "3. Odczytywanie wartości z różnych źródeł",
+          "description": "Odczytywanie wartości funkcji i argumentów z tabel, wykresów punktowych i wykresów ciągłych.",
+          "theory_file": "05_funkcje/03_odczytywanie_wartosci.md"
+        },
+        {
+          "name": "4. Odczytywanie własności z wykresów",
+          "description": "Kompleksowa analiza wykresu funkcji: dziedzina, zbiór wartości, miejsca zerowe, przedziały monotoniczności i znak funkcji.",
+          "theory_file": "05_funkcje/04_odczytywanie_wlasnosci_z_wykresow.md"
+        },
+        {
+          "name": "5. Interpretacja współczynników funkcji liniowej",
+          "description": "Geometryczne znaczenie współczynnika kierunkowego a i wyrazu wolnego b we wzorze f(x) = ax + b.",
+          "theory_file": "05_funkcje/05_wspolczynniki_funkcji_liniowej.md"
+        },
+        {
+          "name": "6. Wyznaczanie wzoru funkcji liniowej",
+          "description": "Wyznaczanie równania prostej przechodzącej przez dwa punkty oraz prostych równoległych i prostopadłych.",
+          "theory_file": "05_funkcje/06_wyznaczanie_wzoru_funkcji_liniowej.md"
+        },
+        {
+          "name": "7. Szkicowanie wykresu funkcji kwadratowej",
+          "description": "Postać kanoniczna funkcji kwadratowej, współrzędne wierzchołka paraboli, oś symetrii oraz szkicowanie wykresu.",
+          "theory_file": "05_funkcje/07_szkicowanie_wykresu_kwadratowej.md"
+        },
+        {
+          "name": "8. Współczynniki funkcji kwadratowej",
+          "description": "Wpływ współczynników a, b, c i delty na położenie i kształt paraboli oraz zastosowanie wzorów Viete'a.",
+          "theory_file": "05_funkcje/08_wspolczynniki_funkcji_kwadratowej.md"
+        },
+        {
+          "name": "9. Wyznaczanie wzoru funkcji kwadratowej",
+          "description": "Przechodzenie między postacią ogólną, kanoniczną i iloczynową oraz wyznaczanie wzoru na podstawie własności.",
+          "theory_file": "05_funkcje/09_wyznaczanie_wzoru_kwadratowej.md"
+        },
+        {
+          "name": "10. Ekstrema funkcji kwadratowej w przedziale",
+          "description": "Algorytm wyznaczania wartości najmniejszej i największej funkcji kwadratowej w przedziale domkniętym.",
+          "theory_file": "05_funkcje/10_ekstrema_w_przedziale.md"
+        },
+        {
+          "name": "11. Zastosowania geometryczne i fizyczne",
+          "description": "Modelowanie zjawisk fizycznych i geometrycznych za pomocą funkcji kwadratowej (maksymalizacja pola, rzut pionowy).",
+          "theory_file": "05_funkcje/11_zastosowania_geometryczne_i_fizyczne.md"
+        },
+        {
+          "name": "12. Przesunięcia wykresów f(x-a) i f(x)+b",
+          "description": "Translacja wykresu o wektor v = [p, q] oraz symetrie osiowe względem osi OX i OY.",
+          "theory_file": "05_funkcje/12_przesuniecia_wykresow.md"
+        },
+        {
+          "name": "13. Proporcjonalność odwrotna f(x) = a/x",
+          "description": "Własności i wykres proporcjonalności odwrotnej, asymptoty hiperboli oraz zastosowania praktyczne.",
+          "theory_file": "05_funkcje/13_proporcjonalnosc_odwrotna.md"
+        },
+        {
+          "name": "14. Funkcja wykładnicza i logarytmiczna",
+          "description": "Własności funkcji wykładniczej f(x) = a^x i logarytmicznej g(x) = log_a x, ich wykresy, dziedziny i wzajemna symetria.",
+          "theory_file": "05_funkcje/14_funkcja_wykladnicza_i_logarytmiczna.md"
+        }
+      ]
+    },
+    {
+      "name": "VI. Ciągi",
+      "folder": "06_ciagi",
+      "topics": [
+        {
+          "name": "1. Wyrazy ciągu określonego wzorem ogólnym",
+          "description": "Obliczanie wyrazów ciągu ze wzoru ogólnego oraz badanie własności wyrazów.",
+          "theory_file": "06_ciagi/01_wyrazy_ciagu_wzor_ogolny.md"
+        },
+        {
+          "name": "2. Ciągi określone rekurencyjnie",
+          "description": "Obliczanie początkowych wyrazów ciągu na podstawie reguły rekurencyjnej.",
+          "theory_file": "06_ciagi/02_ciagi_rekurencyjne.md"
+        },
+        {
+          "name": "3. Badanie monotoniczności ciągów",
+          "description": "Badanie różnicy kolejnych wyrazów i określanie monotoniczności ciągu.",
+          "theory_file": "06_ciagi/03_monotonicznosc_ciagow.md"
+        },
+        {
+          "name": "4. Sprawdzanie rodzaju ciągu (arytmetyczny czy geometryczny)",
+          "description": "Weryfikacja stałości różnicy r lub ilorazu q.",
+          "theory_file": "06_ciagi/04_rodzaje_ciagow.md"
+        },
+        {
+          "name": "5. Ciąg arytmetyczny – wzór ogólny i suma wyrazów",
+          "description": "Stosowanie wzoru na n-ty wyraz i sumę początkowych wyrazów ciągu arytmetycznego.",
+          "theory_file": "06_ciagi/05_ciag_arytmetyczny.md"
+        },
+        {
+          "name": "6. Ciąg geometryczny – wzór ogólny i suma wyrazów",
+          "description": "Stosowanie wzoru na n-ty wyraz i sumę początkowych wyrazów ciągu geometrycznego.",
+          "theory_file": "06_ciagi/06_ciag_geometryczny.md"
+        },
+        {
+          "name": "7. Własności ciągów w zadaniach praktycznych",
+          "description": "Zastosowanie ciągów do rozwiązywania zadań z kontekstem realistycznym i finansowym.",
+          "theory_file": "06_ciagi/07_ciagi_zadania_praktyczne.md"
+        }
+      ]
+    },
+    {
+      "name": "VII. Trygonometria",
+      "folder": "07_trygonometria",
+      "topics": [
+        {
+          "name": "1. Funkcje trygonometryczne kąta 0° - 180°",
+          "description": "Definicje sinusa, cosinusa i tangensa oraz wartości dla 30°, 45°, 60°.",
+          "theory_file": "07_trygonometria/01_funkcje_trygonometryczne_kata.md"
+        },
+        {
+          "name": "2. Tożsamości trygonometryczne i wzory redukcyjne",
+          "description": "Jedynka trygonometryczna oraz tożsamości podstawowe.",
+          "theory_file": "07_trygonometria/02_tozsamosci_trygonometryczne.md"
+        },
+        {
+          "name": "3. Twierdzenie sinusów i cosinusów oraz pole trójkąta",
+          "description": "Stosowanie twierdzeń sinusów i cosinusów oraz wzoru na pole z sinusem.",
+          "theory_file": "07_trygonometria/03_twierdzenie_sinusow_i_cosinusow.md"
+        },
+        {
+          "name": "4. Rozwiązywanie trójkątów prostokątnych",
+          "description": "Wyznaczanie boków i kątów w trójkącie prostokątnym za pomocą trygonometrii.",
+          "theory_file": "07_trygonometria/04_rozwiazywanie_trojkatow_prostokatnych.md"
+        }
+      ]
+    },
+    {
+      "name": "VIII. Planimetria",
+      "folder": "08_planimetria",
+      "topics": [
+        {
+          "name": "1. Okrąg i cięciwy – promienie, średnice i styczne",
+          "description": "Wyznaczanie promieni, średnic, cięciw i odcinków stycznych z tw. Pitagorasa.",
+          "theory_file": "08_planimetria/01_okrag_i_cieciwy.md"
+        },
+        {
+          "name": "2. Klasyfikacja trójkątów i twierdzenie odwrotne do tw. Pitagorasa",
+          "description": "Rozpoznawanie trójkątów ostrokątnych, prostokątnych i rozwartokątnych.",
+          "theory_file": "08_planimetria/02_klasyfikacja_trojkatow.md"
+        },
+        {
+          "name": "3. Wielokąty foremne i ich własności",
+          "description": "Rozpoznawanie wielokątów foremnych i ich własności miarowych.",
+          "theory_file": "08_planimetria/03_wielokaty_foremne.md"
+        },
+        {
+          "name": "4. Czworokąty – własności kątów i przekątnych",
+          "description": "Własności prostokątów, równoległoboków, rombów i trapezów.",
+          "theory_file": "08_planimetria/04_czworokaty.md"
+        },
+        {
+          "name": "5. Kąty wpisane i środkowe w okręgu",
+          "description": "Twierdzenie o kącie wpisanym i środkowym opartych na tym samym łuku.",
+          "theory_file": "08_planimetria/05_katy_wpisane_i_srodkowe.md"
+        },
+        {
+          "name": "6. Długość łuku okręgu i pole wycinka koła",
+          "description": "Stosowanie wzorów na pole wycinka koła i długość łuku.",
+          "theory_file": "08_planimetria/06_dlugosc_luku_i_wycinek_kola.md"
+        },
+        {
+          "name": "7. Twierdzenie Talesa",
+          "description": "Podział proporcjonalny odcinków i twierdzenie Talesa.",
+          "theory_file": "08_planimetria/07_twierdzenie_talesa.md"
+        },
+        {
+          "name": "8. Cechy podobieństwa trójkątów (BBB, BKB, KKK)",
+          "description": "Rozpoznawanie trójkątów podobnych i skala podobieństwa.",
+          "theory_file": "08_planimetria/08_podobienstwo_trojkatow.md"
+        },
+        {
+          "name": "9. Pola i obwody figur podobnych",
+          "description": "Zależności między obwodami oraz między polami figur podobnych.",
+          "theory_file": "08_planimetria/09_pola_i_obwody_figur_podobnych.md"
+        },
+        {
+          "name": "10. Punkty szczególne w trójkącie",
+          "description": "Środek okręgu wpisanego, opisanego, ortocentrum i środek ciężkości.",
+          "theory_file": "08_planimetria/10_punkty_szczegolne_trojkata.md"
+        },
+        {
+          "name": "11. Dowody geometryczne w planimetrii",
+          "description": "Przeprowadzanie dowodów dedukcyjnych na figurach płaskich.",
+          "theory_file": "08_planimetria/11_dowody_geometryczne.md"
+        },
+        {
+          "name": "12. Zastosowanie trygonometrii w figurach płaskich",
+          "description": "Obliczanie długości odcinków i pól figur za pomocą trygonometrii.",
+          "theory_file": "08_planimetria/12_trygonometria_w_planimetrii.md"
+        }
+      ]
+    },
+    {
+      "name": "IX. Geometria analityczna na płaszczyźnie kartezjańskiej",
+      "folder": "09_geometria_analityczna",
+      "topics": [
+        {
+          "name": "1. Wzajemne położenie prostych i punkt przecięcia",
+          "description": "Rozpoznawanie wzajemnego położenia prostych i znajdowanie punktu wspólnego.",
+          "theory_file": "09_geometria_analityczna/01_wzajemne_polozenie_prostych.md"
+        },
+        {
+          "name": "2. Równania prostej (postać kierunkowa i ogólna)",
+          "description": "Wyznaczanie prostej o zadanych własnościach i równania prostych.",
+          "theory_file": "09_geometria_analityczna/02_rownania_prostej.md"
+        },
+        {
+          "name": "3. Odległość punktów i środek odcinka w układzie współrzędnych",
+          "description": "Obliczanie odległości dwóch punktów i współrzędnych środka odcinka.",
+          "theory_file": "09_geometria_analityczna/03_odleglosc_i_srodek_odcinka.md"
+        },
+        {
+          "name": "4. Równanie okręgu w postaci kanonicznej",
+          "description": "Posługiwanie się równaniem (x-a)^2 + (y-b)^2 = r^2.",
+          "theory_file": "09_geometria_analityczna/04_rownanie_okregu.md"
+        },
+        {
+          "name": "5. Przekształcenia geometryczne w układzie współrzędnych",
+          "description": "Symetrie osiowe względem osi OX/OY i symetria środkowa względem (0,0).",
+          "theory_file": "09_geometria_analityczna/05_przeksztalcenia_geometryczne.md"
+        }
+      ]
+    },
+    {
+      "name": "X. Stereometria",
+      "folder": "10_stereometria",
+      "topics": [
+        {
+          "name": "1. Proste i płaszczyzny w przestrzeni oraz kąt dwuścienny",
+          "description": "Wzajemne położenie prostych i kąt między prostą a płaszczyzną oraz dwuścienny.",
+          "theory_file": "10_stereometria/01_proste_i_plaszczyzny.md"
+        },
+        {
+          "name": "2. Kąty w graniastosłupach i ostrosłupach",
+          "description": "Rozpoznawanie i obliczanie kątów między odcinkami i ścianami.",
+          "theory_file": "10_stereometria/02_katy_w_wieloscianach.md"
+        },
+        {
+          "name": "3. Kąty w walcach i stożkach",
+          "description": "Kąt rozwarcia stożka i kąt między tworzącą a podstawą.",
+          "theory_file": "10_stereometria/03_katy_w_brylach_obrotowych.md"
+        },
+        {
+          "name": "4. Graniastosłupy i ostrosłupy – pola i objętości",
+          "description": "Pola powierzchni i objętości wielościanów z elementami trygonometrii.",
+          "theory_file": "10_stereometria/04_wielosciany_pola_i_objetosci.md"
+        },
+        {
+          "name": "5. Bryły obrotowe (walec, stożek, kula) – pola i objętości",
+          "description": "Obliczanie pól i objętości walca, stożka i kuli.",
+          "theory_file": "10_stereometria/05_bryly_obrotowe.md"
+        },
+        {
+          "name": "6. Bryły podobne i stosunek objętości",
+          "description": "Stosunek objętości brył podobnych w skali k^3.",
+          "theory_file": "10_stereometria/06_bryly_podobne.md"
+        }
+      ]
+    },
+    {
+      "name": "XI. Kombinatoryka",
+      "folder": "11_kombinatoryka",
+      "topics": [
+        {
+          "name": "1. Zliczanie obiektów w prostych sytuacjach kombinatorycznych",
+          "description": "Wypisywanie, diagramy i zliczanie obiektów spełniających warunki.",
+          "theory_file": "11_kombinatoryka/01_proste_zliczanie_obiektow.md"
+        },
+        {
+          "name": "2. Reguła mnożenia i reguła dodawania",
+          "description": "Stosowanie reguł kombinatorycznych dla dowolnej liczby czynności.",
+          "theory_file": "11_kombinatoryka/02_regula_mnozenia_i_dodawania.md"
+        },
+        {
+          "name": "3. Złożone zadania kombinatoryczne z warunkami na cyfry",
+          "description": "Liczby wielocyfrowe o określonych własnościach cyfr i parzystości.",
+          "theory_file": "11_kombinatoryka/03_zadania_z_warunkami_na_cyfry.md"
+        }
+      ]
+    },
+    {
+      "name": "XII. Rachunek prawdopodobieństwa i statystyka",
+      "folder": "12_rachunek_prawdopodobienstwa_i_statystyka",
+      "topics": [
+        {
+          "name": "1. Doświadczenia losowe i klasyczny model prawdopodobieństwa",
+          "description": "Wyznaczanie przestrzeni omega i obliczanie prawdopodobieństwa P(A) = |A|/|omega|.",
+          "theory_file": "12_rachunek_prawdopodobienstwa_i_statystyka/01_model_klasyczny.md"
+        },
+        {
+          "name": "2. Własności prawdopodobieństwa i reguły obliczeń",
+          "description": "Zdarzenie przeciwne, suma zdarzeń i drzewa stochastyczne.",
+          "theory_file": "12_rachunek_prawdopodobienstwa_i_statystyka/02_wlasnosci_prawdopodobienstwa.md"
+        },
+        {
+          "name": "3. Statystyka opisowa – średnia arytmetyczna i średnia ważona",
+          "description": "Obliczanie średniej arytmetycznej i ważonej ze zbioru danych.",
+          "theory_file": "12_rachunek_prawdopodobienstwa_i_statystyka/03_srednia_arytmetyczna_i_wazona.md"
+        },
+        {
+          "name": "4. Statystyka opisowa – mediana i dominanta (moda)",
+          "description": "Porządkowanie próbki, wyznaczanie mediany oraz dominanty.",
+          "theory_file": "12_rachunek_prawdopodobienstwa_i_statystyka/04_mediana_i_dominanta.md"
+        }
+      ]
+    },
+    {
+      "name": "XIII. Optymalizacja i rachunek różniczkowy",
+      "folder": "13_optymalizacja_i_pochodne",
+      "topics": [
+        {
+          "name": "1. Modelowanie sytuacji praktycznych funkcją kwadratową",
+          "description": "Wyznaczanie wzoru funkcji celu oraz dziedziny w problemach rzeczywistych.",
+          "theory_file": "13_optymalizacja_i_pochodne/01_modelowanie_funkcja_kwadratowa.md"
+        },
+        {
+          "name": "2. Zagadnienia optymalizacyjne z funkcją kwadratową",
+          "description": "Wyznaczanie największej i najmniejszej wartości za pomocą wierzchołka paraboli.",
+          "theory_file": "13_optymalizacja_i_pochodne/02_zadania_optymalizacyjne_kwadratowa.md"
+        }
+      ]
+    }
+  ]
+}
