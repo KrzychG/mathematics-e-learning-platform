@@ -1,0 +1,316 @@
+{
+  "exam_tasks": [
+    {
+      "question": "Liczba $$\\log_{\\sqrt{3}} 9$$ jest równa:",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "\\frac{1}{2}"
+      },
+      "correct_answer": "C",
+      "difficulty": 2,
+      "explanation": "Z definicji logarytmu: $$(\\sqrt{3})^x = 9 \\iff (3^{1/2})^x = 3^2 \\iff \\frac{1}{2}x = 2 \\iff x = 4$$."
+    },
+    {
+      "question": "Wartość wyrażenia $$(2x - 3)^2 - 4x^2$$ jest równa:",
+      "options": {
+        "A": "-12x - 9",
+        "B": "-12x + 9",
+        "C": "9",
+        "D": "12x + 9"
+      },
+      "correct_answer": "B",
+      "difficulty": 1,
+      "explanation": "Rozwijamy wzór skróconego mnożenia: $$(2x - 3)^2 - 4x^2 = 4x^2 - 12x + 9 - 4x^2 = -12x + 9$$."
+    },
+    {
+      "question": "Rozwiązaniem równania $$(x - 2)(x + 4) = 0$$ są liczby:",
+      "options": {
+        "A": "-2 oraz 4",
+        "B": "2 oraz 4",
+        "C": "2 oraz -4",
+        "D": "-2 oraz -4"
+      },
+      "correct_answer": "C",
+      "difficulty": 1,
+      "explanation": "Iloczyn jest równy 0, gdy co najmniej jeden z czynników jest zerem: $$x - 2 = 0 \\implies x = 2$$ lub $$x + 4 = 0 \\implies x = -4$$."
+    },
+    {
+      "question": "W ciągu arytmetycznym dany jest pierwszy wyraz $$a_1 = 3$$ oraz różnica $$r = 4$$. Piąty wyraz $$a_5$$ tego ciągu wynosi:",
+      "options": {
+        "A": "15",
+        "B": "19",
+        "C": "23",
+        "D": "16"
+      },
+      "correct_answer": "B",
+      "difficulty": 1,
+      "explanation": "Stosujemy wzór ogólny: $$a_5 = a_1 + 4r = 3 + 4 \\cdot 4 = 3 + 16 = 19$$."
+    },
+    {
+      "question": "W ciągu geometrycznym o wyrazach dodatnich dane są $$a_1 = 2$$ oraz iloraz $$q = 3$$. Czwarty wyraz $$a_4$$ jest równy:",
+      "options": {
+        "A": "18",
+        "B": "24",
+        "C": "36",
+        "D": "54"
+      },
+      "correct_answer": "D",
+      "difficulty": 2,
+      "explanation": "Ze wzoru na $$n$$-ty wyraz ciągu geometrycznego: $$a_4 = a_1 \\cdot q^3 = 2 \\cdot 3^3 = 2 \\cdot 27 = 54$$."
+    },
+    {
+      "question": "Proste o równaniach $$y = 2x + 1$$ oraz $$y = ax - 4$$ są równoległe, gdy współczynnik $$a$$ wynosi:",
+      "options": {
+        "A": "2",
+        "B": "-2",
+        "C": "\\frac{1}{2}",
+        "D": "-\\frac{1}{2}"
+      },
+      "correct_answer": "A",
+      "difficulty": 1,
+      "explanation": "Dwie proste w postaci kierunkowej są równoległe wtedy i tylko wtedy, gdy ich współczynniki kierunkowe są równe: $$a_1 = a_2 \\implies a = 2$$."
+    },
+    {
+      "question": "Proste o równaniach $$y = -\\frac{1}{3}x + 2$$ oraz $$y = ax + 5$$ są prostopadłe, gdy:",
+      "options": {
+        "A": "a = -\\frac{1}{3}",
+        "B": "a = -3",
+        "C": "a = 3",
+        "D": "a = \\frac{1}{3}"
+      },
+      "correct_answer": "C",
+      "difficulty": 2,
+      "explanation": "Warunek prostopadłości prostych: $$a_1 \\cdot a_2 = -1 \\implies -\\frac{1}{3} \\cdot a = -1 \\implies a = 3$$."
+    },
+    {
+      "question": "Wierzchołkiem paraboli o równaniu $$y = (x - 3)^2 + 2$$ jest punkt o współrzędnych:",
+      "options": {
+        "A": "(3, 2)",
+        "B": "(-3, 2)",
+        "C": "(3, -2)",
+        "D": "(-3, -2)"
+      },
+      "correct_answer": "A",
+      "difficulty": 1,
+      "explanation": "Postać kanoniczna to $$y = a(x - p)^2 + q$$, gdzie $$W = (p, q)$$. Zatem $$p = 3, q = 2$$, czyli $$W = (3, 2)$$."
+    },
+    {
+      "question": "Miejscami zerowymi funkcji kwadratowej $$f(x) = x^2 - 9$$ są liczby:",
+      "options": {
+        "A": "tylko 3",
+        "B": "3 oraz -3",
+        "C": "tylko 9",
+        "D": "9 oraz -9"
+      },
+      "correct_answer": "B",
+      "difficulty": 1,
+      "explanation": "Rozwiązujemy $$x^2 - 9 = 0 \\iff (x - 3)(x + 3) = 0 \\iff x = 3$$ lub $$x = -3$$."
+    },
+    {
+      "question": "Kąt środkowy oparty na tym samym łuku co kąt wpisany ma miarę $$70^\\circ$$. Miara kąta wpisanego wynosi:",
+      "options": {
+        "A": "35^\\circ",
+        "B": "70^\\circ",
+        "C": "140^\\circ",
+        "D": "45^\\circ"
+      },
+      "correct_answer": "A",
+      "difficulty": 1,
+      "explanation": "Miara kąta wpisanego jest równa połowie miary kąta środkowego opartego na tym samym łuku: $$\\frac{70^\\circ}{2} = 35^\\circ$$."
+    },
+    {
+      "question": "Dla każdego kąta ostrego $$\\alpha$$ wartość wyrażenia $$\\sin^2 \\alpha + \\cos^2 \\alpha$$ jest równa:",
+      "options": {
+        "A": "0",
+        "B": "\\frac{1}{2}",
+        "C": "2",
+        "D": "1"
+      },
+      "correct_answer": "D",
+      "difficulty": 1,
+      "explanation": "Jest to podstawowa tożsamość trygonometryczna (jedynka trygonometryczna): $$\\sin^2 \\alpha + \\cos^2 \\alpha = 1$$."
+    },
+    {
+      "question": "Pole trójkąta równobocznego o boku długości $$a = 4$$ wynosi:",
+      "options": {
+        "A": "2\\sqrt{3}",
+        "B": "8\\sqrt{3}",
+        "C": "4\\sqrt{3}",
+        "D": "16"
+      },
+      "correct_answer": "C",
+      "difficulty": 2,
+      "explanation": "Wzór na pole trójkąta równobocznego: $$P = \\frac{a^2 \\sqrt{3}}{4} = \\frac{4^2 \\sqrt{3}}{4} = \\frac{16\\sqrt{3}}{4} = 4\\sqrt{3}$$."
+    },
+    {
+      "question": "Promień okręgu o równaniu $$(x - 1)^2 + (y + 2)^2 = 25$$ jest równy:",
+      "options": {
+        "A": "25",
+        "B": "5",
+        "C": "\\sqrt{5}",
+        "D": "10"
+      },
+      "correct_answer": "B",
+      "difficulty": 1,
+      "explanation": "Równanie okręgu ma postać $$(x - a)^2 + (y - b)^2 = r^2$$. Skoro $$r^2 = 25$$, to promień $$r = 5$$."
+    },
+    {
+      "question": "Przekątna kwadratu o boku $$5\\sqrt{2}$$ ma długość:",
+      "options": {
+        "A": "10",
+        "B": "5",
+        "C": "10\\sqrt{2}",
+        "D": "20"
+      },
+      "correct_answer": "A",
+      "difficulty": 1,
+      "explanation": "Wzór na przekątną kwadratu to $$d = a\\sqrt{2}$$. Zatem $$d = 5\\sqrt{2} \\cdot \\sqrt{2} = 5 \\cdot 2 = 10$$."
+    },
+    {
+      "question": "Objętość sześcianu o krawędzi długości 3 jest równa:",
+      "options": {
+        "A": "9",
+        "B": "18",
+        "C": "54",
+        "D": "27"
+      },
+      "correct_answer": "D",
+      "difficulty": 1,
+      "explanation": "Objętość sześcianu wynosi $$V = a^3 = 3^3 = 27$$."
+    },
+    {
+      "question": "W rzucie standardową, symetryczną sześcienną kostką do gry prawdopodobieństwo otrzymania liczby oczek większej niż 4 wynosi:",
+      "options": {
+        "A": "\\frac{1}{6}",
+        "B": "\\frac{1}{2}",
+        "C": "\\frac{1}{3}",
+        "D": "\\frac{2}{3}"
+      },
+      "correct_answer": "C",
+      "difficulty": 2,
+      "explanation": "Wszystkich zdarzeń elementarnych jest $$|\\Omega| = 6$$. Liczby oczek większe niż 4 to {5, 6}, zatem $$|A| = 2$$. Stąd $$P(A) = \\frac{2}{6} = \\frac{1}{3}$$."
+    },
+    {
+      "question": "Mediana zestawu liczb: 2, 3, 5, 7, 8, 11 wynosi:",
+      "options": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "5.5"
+      },
+      "correct_answer": "B",
+      "difficulty": 2,
+      "explanation": "Liczby są już uporządkowane. Zestaw liczy 6 elementów (liczba parzysta), więc medianą jest średnia dwóch środkowych wyrazów: $$\\frac{5 + 7}{2} = \\frac{12}{2} = 6$$."
+    },
+    {
+      "question": "Średnia arytmetyczna liczb 4, 8, 12, 16 jest równa:",
+      "options": {
+        "A": "10",
+        "B": "8",
+        "C": "12",
+        "D": "14"
+      },
+      "correct_answer": "A",
+      "difficulty": 1,
+      "explanation": "Średnia arytmetyczna: $$\\frac{4 + 8 + 12 + 16}{4} = \\frac{40}{4} = 10$$."
+    },
+    {
+      "question": "Wartość potęgi $$2^{-3}$$ wynosi:",
+      "options": {
+        "A": "-8",
+        "B": "-6",
+        "C": "\\frac{1}{8}",
+        "D": "\\frac{1}{6}"
+      },
+      "correct_answer": "C",
+      "difficulty": 1,
+      "explanation": "Zgodnie z własnościami potęg o wykładniku ujemnym: $$2^{-3} = \\frac{1}{2^3} = \\frac{1}{8}$$."
+    },
+    {
+      "question": "Różnica $$\\sqrt{32} - \\sqrt{18}$$ jest równa:",
+      "options": {
+        "A": "\\sqrt{14}",
+        "B": "\\sqrt{2}",
+        "C": "2\\sqrt{2}",
+        "D": "2"
+      },
+      "correct_answer": "B",
+      "difficulty": 2,
+      "explanation": "Wyłączamy czynnik przed znak pierwiastka: $$\\sqrt{32} = \\sqrt{16 \\cdot 2} = 4\\sqrt{2}$$, a $$\\sqrt{18} = \\sqrt{9 \\cdot 2} = 3\\sqrt{2}$$. Różnica to $$4\\sqrt{2} - 3\\sqrt{2} = \\sqrt{2}$$."
+    }
+  ],
+  "practice_fallback_tasks": {
+    "1": [
+      {
+        "question": "Oblicz wartość wyrażenia: $$2^3 + 4$$",
+        "options": {
+          "A": "12",
+          "B": "10",
+          "C": "14",
+          "D": "16"
+        },
+        "correct_answer": "A"
+      },
+      {
+        "question": "Rozwiąż równanie: $$x + 7 = 15$$",
+        "options": {
+          "A": "6",
+          "B": "8",
+          "C": "10",
+          "D": "22"
+        },
+        "correct_answer": "B"
+      }
+    ],
+    "2": [
+      {
+        "question": "Rozwiń ze wzoru skróconego mnożenia: $$(x + 3)^2$$",
+        "options": {
+          "A": "x^2 + 6x + 9",
+          "B": "x^2 + 9",
+          "C": "x^2 + 3x + 9",
+          "D": "x^2 + 6x + 6"
+        },
+        "correct_answer": "A"
+      }
+    ],
+    "3": [
+      {
+        "question": "Rozłóż na czynniki: $$x^2 - 25$$",
+        "options": {
+          "A": "(x - 5)(x + 5)",
+          "B": "(x - 5)^2",
+          "C": "(x + 5)^2",
+          "D": "x(x - 25)"
+        },
+        "correct_answer": "A"
+      }
+    ],
+    "4": [
+      {
+        "question": "Oblicz wartość wyrażenia: $$(2 - \\sqrt{3})(2 + \\sqrt{3})$$",
+        "options": {
+          "A": "1",
+          "B": "7",
+          "C": "-1",
+          "D": "4 - 2\\sqrt{3}"
+        },
+        "correct_answer": "A"
+      }
+    ],
+    "5": [
+      {
+        "question": "Dla jakiej dodatniej wartości $x$ wyrażenie $$x^2 - 6x + 9$$ przyjmuje wartość $0$?",
+        "options": {
+          "A": "9",
+          "B": "6",
+          "C": "3",
+          "D": "0"
+        },
+        "correct_answer": "C"
+      }
+    ]
+  }
+}
