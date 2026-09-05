@@ -1,0 +1,134 @@
+{% macro render_interactive_option(
+    mode,
+    letter,
+    text='',
+    input_name='user_answer',
+    input_id='',
+    checked=false,
+    required=true,
+    extra_attrs=none
+) -%}
+{% if mode == 'exam' %}
+<div>
+    <input type="radio" class="d-none exam-option-input" name="{{ input_name }}" {% if input_id %}id="{{ input_id }}"{% endif %} value="{{ letter }}" {% if extra_attrs %}{% for attr_name, attr_val in extra_attrs.items() %}{{ attr_name }}="{{ attr_val }}" {% endfor %}{% endif %} {% if checked %}checked{% endif %}>
+    <label class="exam-option-label" {% if input_id %}for="{{ input_id }}"{% endif %}>
+        <span class="exam-badge-letter">{{ letter }}</span>
+        <span class="exam-option-text fs-6">{{ text | format_math }}</span>
+    </label>
+</div>
+{% else %}
+<div class="col-12 col-md-6">
+    <label class="option-card card h-100 p-3 rounded-4 border-2 shadow-sm d-flex flex-row align-items-center gap-3" {% if input_id %}for="{{ input_id }}"{% endif %}>
+        <input type="radio" class="form-check-input option-radio mt-0 flex-shrink-0" name="{{ input_name }}" {% if input_id %}id="{{ input_id }}"{% endif %} value="{{ letter }}" {% if checked %}checked{% endif %} {% if required %}required{% endif %}>
+        <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+            <span class="badge bg-primary bg-opacity-10 text-primary rounded-circle fw-bold fs-6 d-inline-flex align-items-center justify-content-center flex-shrink-0 option-letter-badge" style="width: 36px; height: 36px;">{{ letter }}</span>
+            <span class="option-text fs-5 text-dark text-break">{{ text | format_math }}</span>
+        </div>
+    </label>
+</div>
+{% endif %}
+{%- endmacro %}
+{% macro render_interactive_options(
+    options,
+    mode='practice',
+    input_name='user_answer',
+    id_prefix='option_',
+    selected_answer='',
+    task_id=none,
+    task_index=none
+) -%}
+{% if mode == 'exam' %}
+    {% for letter, text in options.items() %}
+        {{ render_interactive_option(
+            'exam',
+            letter,
+            text,
+            input_name=input_name,
+            input_id=id_prefix ~ letter,
+            checked=(selected_answer == letter),
+            required=false,
+            extra_attrs={'data-task-id': task_id, 'data-task-index': task_index}
+        ) }}
+    {% endfor %}
+{% else %}
+    {% for letter in ['A', 'B', 'C', 'D'] %}
+        {% if letter in options %}
+            {{ render_interactive_option( 'practice', letter, options[letter], input_name=input_name, input_id=id_prefix ~ letter, checked=(selected_answer|upper == letter), required=true ) }}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{%- endmacro %}
+{% macro render_result_options(options, user_answer, correct_answer, variant='practice') -%}
+{% set is_exam = (variant == 'exam') %}
+{% set option_items = [] %}
+{% if is_exam %}
+    {% set option_items = options.items() %}
+{% else %}
+    {% for l in ['A', 'B', 'C', 'D'] %}
+        {% if l in options %}
+            {% set _ = option_items.append((l, options[l])) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div class="row {{ 'g-2 mb-3' if is_exam else 'g-3' }}">
+    {% for letter, text in option_items %}
+        {% set has_answer = true if (user_answer and user_answer|trim != '') else false %}
+        {% set is_correct_option = true if (correct_answer and letter|upper == correct_answer|upper) else false %}
+        {% set is_chosen_option = true if (has_answer and letter|upper == user_answer|upper) else false %}
+        {% if is_exam %}
+            {% if is_chosen_option and is_correct_option %}
+                {% set card_classes = 'p-3 rounded border border-success border-2 bg-success bg-opacity-10 text-success fw-bold d-flex align-items-center justify-content-between' %}
+                {% set badge_classes = 'badge rounded-circle p-2 me-2 bg-success text-white' %}
+            {% elif is_chosen_option and not is_correct_option %}
+                {% set card_classes = 'p-3 rounded border border-danger border-2 bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-between' %}
+                {% set badge_classes = 'badge rounded-circle p-2 me-2 bg-danger text-white' %}
+            {% elif is_correct_option and not has_answer %}
+                {% set card_classes = 'p-3 rounded border border-success border-2 border-dashed bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-between' %}
+                {% set badge_classes = 'badge rounded-circle p-2 me-2 bg-success bg-opacity-25 text-success border border-success' %}
+            {% elif is_correct_option and has_answer %}
+                {% set card_classes = 'p-3 rounded border border-success border-2 bg-success bg-opacity-10 text-success fw-bold d-flex align-items-center justify-content-between' %}
+                {% set badge_classes = 'badge rounded-circle p-2 me-2 bg-success text-white' %}
+            {% else %}
+                {% set card_classes = 'p-3 rounded border bg-light text-muted d-flex align-items-center justify-content-between' %}
+                {% set badge_classes = 'badge rounded-circle p-2 me-2 bg-secondary text-white' %}
+            {% endif %}
+            {% set badge_style = '' %}
+            {% set inner_wrap = 'd-flex align-items-center' %}
+            {% set text_classes = 'option-text' %}
+            {% set col_classes = 'col-md-6' %}
+        {% else %}
+            {% set card_classes = 'p-3 rounded-4 border-2 d-flex align-items-center justify-content-between h-100 shadow-sm ' ~ ('border-success bg-success bg-opacity-10' if is_correct_option else ('border-danger bg-danger bg-opacity-10' if is_chosen_option else 'border bg-white text-muted')) %}
+            {% set badge_classes = 'badge ' ~ ('bg-success text-white' if is_correct_option else ('bg-danger text-white' if is_chosen_option else 'bg-primary bg-opacity-10 text-primary')) ~ ' rounded-circle fw-bold flex-shrink-0 d-inline-flex align-items-center justify-content-center fs-6' %}
+            {% set badge_style = 'width: 34px; height: 34px;' %}
+            {% set inner_wrap = 'd-flex align-items-center gap-2 overflow-hidden flex-grow-1' %}
+            {% set text_classes = 'text-dark fs-5 text-break option-text' %}
+            {% set col_classes = 'col-12 col-md-6' %}
+        {% endif %}
+        <div class="{{ col_classes }}">
+            <div class="{{ card_classes }}">
+                <div class="{{ inner_wrap }}">
+                    <span class="{{ badge_classes }}"{% if badge_style %} style="{{ badge_style }}"{% endif %}>{{ letter }}</span>
+                    <span class="{{ text_classes }}">{{ text | format_math }}</span>
+                </div>
+                <div{% if not is_exam %} class="ms-2 flex-shrink-0"{% endif %}>
+                    {% if is_exam %}
+                        {% if is_chosen_option and is_correct_option %}
+                            <span class="badge bg-success text-white"><i class="bi bi-check-circle-fill me-1"></i> Twoja odpowiedź</span>
+                        {% elif is_chosen_option %}
+                            <span class="badge bg-danger text-white"><i class="bi bi-x-circle-fill me-1"></i> Twoja odpowiedź</span>
+                        {% elif is_correct_option %}
+                            <span class="badge bg-success text-white"><i class="bi bi-check-lg me-1"></i> Prawidłowa odpowiedź</span>
+                        {% endif %}
+                    {% else %}
+                        {% if is_correct_option %}
+                            <span class="badge bg-success px-2 py-1">Poprawna</span>
+                        {% elif is_chosen_option %}
+                            <span class="badge bg-danger px-2 py-1">Twój wybór</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{%- endmacro %}
