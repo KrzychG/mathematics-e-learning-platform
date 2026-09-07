@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="learningDeskWrapper" class="d-flex h-100 w-100 overflow-hidden position-relative">
+    <div id="syllabusPanel" class="h-100 overflow-y-auto p-3 flex-shrink-0">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-2 px-2">
+            <h6 class="fw-bold text-uppercase tracking-wide text-muted mb-0" style="font-size: 0.8rem;">
+                <i class="bi bi-journal-code text-primary me-2 fs-6"></i> Baza Wiedzy
+            </h6>
+        </div>
+        {% macro render_topic_sidebar_list(topics) %}
+            {% for topic in topics %}
+            {% set percent = progress_map.get(topic.id, 0) %}
+            <a href="{{ url_for('learning.learning_desk', topic_id=topic.id) }}" class="ajax-link text-decoration-none d-block p-2 mb-1 rounded-3 {% if active_topic and active_topic.id == topic.id %} bg-primary bg-opacity-10 border-start border-primary border-3 {% else %} text-muted hover-bg-light border-start border-transparent border-3 {% endif %}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small {% if active_topic and active_topic.id == topic.id %}fw-bold text-primary{% endif %}">
+                        {{ topic.name }}
+                    </span>
+                    {% if percent == 100 %}
+                        <i class="bi bi-check-circle-fill text-success small"></i>
+                    {% elif percent > 0 %}
+                        <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size: 0.65rem;">{{ percent }}%</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        {% endmacro %}
+        <div class="accordion accordion-flush">
+            {% for category in categories %}
+            <div class="accordion-item border-0 mb-2 bg-transparent">
+                <h2 class="accordion-header">
+                    <button type="button" class="accordion-button {% if not (active_topic and active_topic.category_id == category.id) %}collapsed{% endif %} rounded-3 shadow-none fw-bold" style="background-color: var(--app-card-bg);" data-bs-toggle="collapse" data-bs-target="#cat-{{ category.id }}">
+                        {{ category.name }}
+                    </button>
+                </h2>
+                <div id="cat-{{ category.id }}" class="accordion-collapse collapse {% if active_topic and active_topic.category_id == category.id %}show{% endif %}">
+                    <div class="accordion-body p-2 border-start border-2 border-primary border-opacity-25 ms-3 mt-2">
+                        {{ render_topic_sidebar_list(category.topics) }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% if uncategorized_topics %}
+            <div class="accordion-item border-0 mb-2 bg-transparent">
+                <h2 class="accordion-header">
+                    <button type="button" class="accordion-button {% if not (active_topic and active_topic.category_id is none) %}collapsed{% endif %} rounded-3 shadow-none fw-bold" style="background-color: var(--app-card-bg);" data-bs-toggle="collapse" data-bs-target="#cat-uncategorized">
+                        <i class="bi bi-folder2 me-2 text-secondary"></i> {{ UNCATEGORIZED_LABEL }}
+                    </button>
+                </h2>
+                <div id="cat-uncategorized" class="accordion-collapse collapse {% if active_topic and active_topic.category_id is none %}show{% endif %}">
+                    <div class="accordion-body p-2 border-start border-2 border-secondary border-opacity-25 ms-3 mt-2">
+                        {{ render_topic_sidebar_list(uncategorized_topics) }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div id="workspacePanel" class="flex-grow-1 h-100 overflow-y-auto p-3 p-sm-4 p-xl-5 position-relative" style="min-width: 0;">
+        <div class="workspace-content-container mx-auto w-100">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 pb-3 border-bottom" style="border-color: var(--app-border) !important;">
+                <div class="d-flex align-items-center">
+                    <button type="button" id="toggleSyllabusBtn" class="btn btn-light rounded-circle shadow-sm p-2 me-3 d-flex align-items-center justify-content-center hover-lift" style="width: 42px; height: 42px;" title="Zwiń / Rozwiń Bazę Wiedzy">
+                        <i class="bi bi-layout-sidebar-inset fs-5 text-primary"></i>
+                    </button>
+                    {% if active_topic %}
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item text-muted">{{ active_topic.category_label }}</li>
+                                <li class="breadcrumb-item active fw-bold text-primary">{{ active_topic.name }}</li>
+                            </ol>
+                        </nav>
+                    {% else %}
+                        <h6 class="mb-0 text-muted fw-bold tracking-wide small">LABORATORIUM AI</h6>
+                    {% endif %}
+                </div>
+                {% if active_topic %}
+                    <a href="{{ url_for('learning.practice', topic_id=active_topic.id) }}" class="btn btn-primary rounded-pill px-4 py-2.5 fw-bold shadow-sm hover-lift d-inline-flex align-items-center fs-6">
+                        <i class="bi bi-robot fs-5 me-2"></i> Trening <i class="bi bi-arrow-right ms-2 fs-6"></i>
+                    </a>
+                {% endif %}
+            </div>
+            {% if active_topic %}
+                <h1 class="fw-bold mb-3">{{ active_topic.name }}</h1>
+                <p class="text-muted fs-5 mb-5 pb-4 border-bottom" style="border-color: var(--app-border) !important;">
+                    {{ active_topic.description }}
+                </p>
+                <div class="theory-content fs-5 lh-lg mb-5 w-100">
+                    {% if active_topic.theory %}
+                        {{ active_topic.theory | render_theory | safe }}
+                    {% else %}
+                        <div class="p-4 bg-light rounded-4 border text-center text-muted">
+                            <i class="bi bi-journal-text fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                            <h5 class="fw-bold mb-1">Brak treści teoretycznej</h5>
+                            <p class="mb-0">Treść dla tego tematu nie została jeszcze dodana do bazy danych.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="pt-4 border-top text-end mb-4" style="border-color: var(--app-border) !important;">
+                    <a href="{{ url_for('learning.practice', topic_id=active_topic.id) }}" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm hover-lift d-inline-flex align-items-center">
+                        <i class="bi bi-robot me-2"></i> Trening <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            {% else %}
+                <div class="py-5 d-flex flex-column justify-content-center align-items-center text-center opacity-50">
+                    <div class="bg-primary bg-opacity-10 text-primary p-4 rounded-circle mb-4">
+                        <i class="bi bi-journals" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="fw-bold">Przestrzeń robocza</h3>
+                    <p class="fs-5 text-muted" style="max-width: 400px;">
+                        Wybierz podrozdział z bazy wiedzy po lewej stronie, aby wyświetlić odpowiadający mu temat.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/learning.js') }}"></script>{% endblock %}
