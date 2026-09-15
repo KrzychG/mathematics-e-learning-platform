@@ -1,0 +1,57 @@
+<aside class="scratchpad-dock is-collapsed" id="scratchpadDrawer" aria-label="Brudnopis">
+  <div class="scratchpad-header border-bottom py-2 px-3 bg-body-tertiary d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <div class="bg-primary bg-opacity-10 text-primary p-2 rounded">
+        <i class="bi bi-pencil-square fs-5"></i>
+      </div>
+      <div>
+        <h6 class="mb-0 fw-bold">Brudnopis</h6>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary" id="scratchpadClearBtn" title="Wyczyść cały brudnopis">
+        <i class="bi bi-trash3 me-1"></i> Wyczyść
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-primary fw-semibold d-flex align-items-center gap-1" data-scratchpad-toggle="true" title="Schowaj brudnopis">
+        <span>Schowaj</span>
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+  <div class="scratchpad-toolbar bg-body border-bottom p-2 d-flex flex-wrap align-items-center justify-content-between gap-2">
+    <div class="btn-group btn-group-sm" role="group" aria-label="Narzędzia">
+      <button type="button" class="btn btn-outline-primary active" id="toolPen" title="Pisak">
+        <i class="bi bi-pencil-fill me-1"></i> Pisak
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="toolEraser" title="Gumka">
+        <i class="bi bi-eraser-fill me-1"></i> Gumka
+      </button>
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <button type="button" class="scratchpad-color-dot active" id="scratchpadDefaultColorDot" data-color="default" title="Czarny / Grafit"></button>
+      <button type="button" class="scratchpad-color-dot" data-color="#0d6efd" style="background-color: #0d6efd;" title="Niebieski"></button>
+      <button type="button" class="scratchpad-color-dot" data-color="#dc3545" style="background-color: #dc3545;" title="Czerwony"></button>
+      <button type="button" class="scratchpad-color-dot" data-color="#198754" style="background-color: #198754;" title="Zielony"></button>
+    </div>
+    <div class="btn-group btn-group-sm" role="group" aria-label="Grubość" id="scratchpadSizes">
+      <button type="button" class="btn btn-outline-secondary" data-size="2" title="Cienka linia (2px)">• Cienka</button>
+      <button type="button" class="btn btn-outline-secondary active" data-size="4" title="Średnia linia (4px)">● Średnia</button>
+      <button type="button" class="btn btn-outline-secondary" data-size="8" title="Gruba linia (8px)">⬤ Gruba</button>
+    </div>
+    <button type="button" class="btn btn-sm btn-outline-secondary" id="scratchpadUndoBtn" title="Cofnij ostatnie pociągnięcie">
+      <i class="bi bi-arrow-counterclockwise"></i>
+    </button>
+  </div>
+  <div class="scratchpad-body flex-grow-1 position-relative overflow-hidden">
+    <div class="scratchpad-grid-background w-100 h-100 position-absolute top-0 start-0"></div>
+    <canvas id="scratchpadCanvas" class="scratchpad-canvas position-absolute top-0 start-0 w-100 h-100"></canvas>
+  </div>
+  <div class="scratchpad-footer border-top py-2 px-3 bg-body-tertiary d-flex justify-content-between align-items-center">
+    <small class="text-muted"><i class="bi bi-cloud-check text-success me-1"></i>Automatyczny zapis</small>
+  </div>
+</aside>
+<button type="button" class="scratchpad-edge-tab shadow-sm" id="scratchpadEdgeTab" data-scratchpad-toggle="true" title="Otwórz brudnopis matematyczny">
+  <i class="bi bi-chevron-left me-1"></i>
+  <i class="bi bi-pencil-square me-1 text-primary"></i>
+  <span class="fw-semibold">Brudnopis</span>
+</button>
