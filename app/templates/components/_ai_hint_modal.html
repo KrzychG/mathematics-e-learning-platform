@@ -1,0 +1,54 @@
+{% macro render_ai_hint_modal(modal_id='aiHintModal', title='Podpowiedź AI do zadania', answer_label='Odpowiedź ucznia') %}
+<div class="modal fade" id="{{ modal_id }}" data-default-category="{{ UNCATEGORIZED_LABEL }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom px-4 py-3">
+                <div>
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="{{ modal_id }}Label">
+                        <i class="bi bi-lightbulb-fill text-info"></i>
+                        <span>{{ title }}</span>
+                    </h5>
+                    <div class="small text-muted mt-1">
+                        <span id="{{ modal_id }}Category"></span> &bull; <span id="{{ modal_id }}Topic" class="fw-semibold"></span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="p-3 rounded-3 bg-light border mb-3">
+                    <div class="text-uppercase text-muted fw-bold mb-1" style="font-size: 0.7rem;">Treść zadania</div>
+                    <div id="{{ modal_id }}Question" class="small text-body lh-base"></div>
+                    <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top small align-items-center">
+                        <span class="text-muted">{{ answer_label }}: <strong id="{{ modal_id }}UserAnswer" class="font-monospace"></strong></span>
+                        <span class="text-muted">Poprawna: <strong id="{{ modal_id }}CorrectAnswer" class="font-monospace text-success"></strong></span>
+                        <span id="{{ modal_id }}ResultBadge" class="ms-auto"></span>
+                    </div>
+                </div>
+                <div class="text-uppercase text-muted fw-bold mb-2" style="font-size: 0.7rem;">Wyjaśnienie i wskazówka AI</div>
+                <div id="{{ modal_id }}Body" class="text-body lh-base"></div>
+            </div>
+            <div class="modal-footer border-top px-4 py-3">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+{% macro render_ai_hint_button(
+    attempt_id,
+    hint_html,
+    task,
+    user_answer,
+    is_correct=false,
+    id_prefix='hint',
+    button_label='Podpowiedź',
+    fallback_topic='Zadanie usunięte',
+    extra_btn_class='',
+    font_size='0.75rem'
+) -%}
+<button type="button" class="btn btn-sm btn-outline-info py-0 px-2 {% if extra_btn_class %}{{ extra_btn_class }} {% endif %}btn-show-hint" style="font-size: {{ font_size }};" data-hint-id="{{ id_prefix }}-raw-{{ attempt_id }}" data-task-id="{{ id_prefix }}-task-{{ attempt_id }}" data-topic="{{ task.topic.name if (task and task.topic) else fallback_topic }}" data-category="{{ task.topic.category_label if (task and task.topic) else UNCATEGORIZED_LABEL }}" data-user-answer="{{ user_answer or '-' }}" data-correct-answer="{{ task.correct_answer if task else '-' }}" data-is-correct="{{ '1' if is_correct else '0' }}" data-bs-toggle="modal" data-bs-target="#aiHintModal">
+    <i class="bi bi-lightbulb-fill me-1"></i>{{ button_label }}
+</button>
+<div id="{{ id_prefix }}-raw-{{ attempt_id }}" class="d-none">{{- hint_html -}}</div>
+<div id="{{ id_prefix }}-task-{{ attempt_id }}" class="d-none">{{- (task.question | format_math) if task else 'Zadanie usunięte' -}}</div>
+{%- endmacro %}
