@@ -1,0 +1,38 @@
+{% macro render_graph_card(
+    container_id,
+    title,
+    title_icon='bi-graph-up',
+    badge_text='',
+    badge_icon='',
+    wrapper_id=none,
+    wrapper_class='card shadow-sm border-0 rounded-4 mb-4 p-3 bg-light',
+    wrapper_style='',
+    header_class='d-flex justify-content-between align-items-center mb-2 px-2',
+    title_class='small fw-bold text-muted text-uppercase',
+    badge_class='badge bg-primary bg-opacity-10 text-primary small',
+    container_class='d-flex justify-content-center',
+    container_style='',
+    spec_json=none,
+    spec_id=none,
+    spec_class=none,
+    spec_target=none,
+    include_spec_if_none=false
+) -%}
+<div{% if wrapper_id %} id="{{ wrapper_id }}"{% endif %} class="{{ wrapper_class }}"{% if wrapper_style %} style="{{ wrapper_style }}"{% endif %}>
+    <div class="{{ header_class }}">
+        <span class="{{ title_class }}">
+            {% if title_icon %}<i class="bi {{ title_icon }} me-1"></i> {% endif %}{{ title }}
+        </span>
+        {% if badge_text %}
+        <span class="{{ badge_class }}">
+            {% if badge_icon %}<i class="bi {{ badge_icon }} me-1"></i> {% endif %}{{ badge_text }}
+        </span>
+        {% endif %}
+    </div>
+    <div class="{{ container_class }}" id="{{ container_id }}"{% if container_style %} style="{{ container_style }}"{% endif %}></div>
+    {% if spec_json is not none %}<script type="application/json"
+            {% if spec_id %}id="{{ spec_id }}"{% endif %}
+            {% if spec_class %}class="{{ spec_class }}"{% endif %}
+            {% if spec_target %}data-target="{{ spec_target }}"{% endif %}>{{ spec_json | tojson }}</script>    {% endif %}
+</div>
+{%- endmacro %}

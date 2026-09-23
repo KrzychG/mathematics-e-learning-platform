@@ -1,0 +1,7 @@
+<script src="https://cdn.jsdelivr.net/npm/mathjs@12.4.1/lib/browser/math.js"></script>
+<script src="{{ url_for('static', filename='js/graph/math_parser.js') }}"></script>
+<script src="{{ url_for('static', filename='js/graph/engine.js') }}"></script>
+{% if load_graph_explorer %}
+<script src="{{ url_for('static', filename='js/graph/solvers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/graph/explorer.js') }}"></script>
+{% endif %}
