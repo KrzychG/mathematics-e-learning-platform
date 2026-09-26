@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="h-100 w-100 overflow-y-auto p-4 p-md-5">
+    <div class="container mx-auto p-0" style="max-width: 900px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold text-dark mb-0 mt-1 d-flex align-items-center gap-2">
+                    <span class="p-2 bg-primary bg-opacity-10 rounded-3 text-primary d-inline-flex">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </span>
+                    Wykresy funkcji
+                </h3>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4 p-3 p-md-4 bg-white">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" id="modeBtn_custom" class="btn btn-primary btn-sm rounded-pill px-3 mode-btn fw-bold">
+                        <i class="bi bi-pen me-1"></i> Własny wzór
+                    </button>
+                    <button type="button" id="modeBtn_linear" class="btn btn-outline-primary btn-sm rounded-pill px-3 mode-btn fw-bold">
+                        <i class="bi bi-slash-lg me-1"></i> Liniowa (ax + b)
+                    </button>
+                    <button type="button" id="modeBtn_quadratic" class="btn btn-outline-primary btn-sm rounded-pill px-3 mode-btn fw-bold">
+                        <i class="bi bi-pie-chart me-1"></i> Kwadratowa (ax² + bx + c)
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="input-group input-group-lg shadow-xs rounded-pill overflow-hidden border">
+                    <span class="input-group-text bg-light border-0 fw-bold text-primary px-3 px-md-4 font-monospace">f(x) =</span>
+                    <input type="text" id="singleFormulaInput" class="form-control border-0 px-3 fs-6" value="x^2 - 4" placeholder="np. x^2 - 4, 2*x - 3, sin(x), 1/x, abs(x)">
+                    <button class="btn btn-primary px-4 fw-bold" type="button" id="applyFormulaBtn">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Rysuj
+                    </button>
+                </div>
+            </div>
+            <div class="pt-3 border-top">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                    <span class="small fw-bold text-dark d-flex align-items-center gap-1">
+                        <i class="bi bi-collection text-primary"></i> Predefiniowane wykresy funkcji:
+                    </span>
+                    <span class="text-muted small" style="font-size: 0.8rem;">
+                        <i class="bi bi-cursor me-1"></i> Kliknij wzór, aby narysować
+                    </span>
+                </div>
+                {% set preset_functions = [
+                    ('2*x - 3', 'Funkcja liniowa', 'Liniowa', '2x - 3'),
+                    ('x^2 - 4', 'Funkcja kwadratowa (parabola)', 'Kwadratowa', 'x² - 4'),
+                    ('abs(x)', 'Wartość bezwzględna (moduł)', 'Moduł', '|x|'),
+                    ('sqrt(x)', 'Pierwiastek kwadratowy', 'Pierwiastek', '√x'),
+                    ('1/x', 'Funkcja homograficzna (hiperbola)', 'Hiperbola', '1/x'),
+                    ('2^x', 'Funkcja wykładnicza', 'Wykładnicza', '2ˣ'),
+                    ('sin(x)', 'Trygonometria: sinus', 'Sinus', 'sin(x)'),
+                    ('cos(x)', 'Trygonometria: cosinus', 'Cosinus', 'cos(x)')
+                ] %}
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    {% for expr, title_text, label_text, formula_text in preset_functions %}
+                    <button type="button" class="btn btn-sm btn-light border rounded-pill px-3 py-1 preset-pill fw-medium text-dark shadow-xs" data-fn="{{ expr }}" title="{{ title_text }}">
+                        <span class="text-primary me-1 small fw-bold">{{ label_text }}:</span> {{ formula_text }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% macro render_param_slider(col_class, label_html, val_id, slider_id, min_val, max_val, step_val, value, badge_class='bg-primary') -%}
+            <div class="{{ col_class }}">
+                <div class="d-flex justify-content-between small fw-bold mb-1">
+                    <span>{{ label_html }}</span>
+                    <span id="{{ val_id }}" class="badge {{ badge_class }}">{{ value }}</span>
+                </div>
+                <input type="range" class="form-range" id="{{ slider_id }}" min="{{ min_val }}" max="{{ max_val }}" step="{{ step_val }}" value="{{ value }}">
+            </div>
+            {%- endmacro %}
+            <div id="slidersPanel" class="mt-3 pt-3 border-top d-none">
+                <div id="controls_linear" class="row g-3 align-items-center d-none">
+                    {{ render_param_slider('col-md-6', 'Współczynnik $a$:', 'val_lin_a', 'slider_lin_a', -5, 5, 0.5, 2) }}
+                    {{ render_param_slider('col-md-6', 'Wyraz wolny $b$:', 'val_lin_b', 'slider_lin_b', -6, 6, 0.5, -1, 'bg-secondary') }}
+                </div>
+                <div id="controls_quadratic" class="row g-3 align-items-center d-none">
+                    {{ render_param_slider('col-md-4', 'Współczynnik $a$:', 'val_quad_a', 'slider_quad_a', -4, 4, 0.5, 1) }}
+                    {{ render_param_slider('col-md-4', 'Współczynnik $b$:', 'val_quad_b', 'slider_quad_b', -6, 6, 0.5, 0) }}
+                    {{ render_param_slider('col-md-4', 'Współczynnik $c$:', 'val_quad_c', 'slider_quad_c', -6, 6, 0.5, -4, 'bg-secondary') }}
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden bg-white">
+            <div class="card-header bg-transparent border-0 pt-3 px-3 pb-0 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="small fw-bold text-muted text-uppercase me-2">
+                        <i class="bi bi-compass me-1 text-primary"></i> Układ Kartezjański
+                    </span>
+                    <div id="graphActiveLegend" class="d-inline-flex flex-wrap gap-1 align-items-center"></div>
+                </div>
+                <div class="btn-group btn-group-sm rounded-pill shadow-sm overflow-hidden" role="group">
+                    <button type="button" class="btn btn-light" id="zoomInBtn" title="Przybliż"><i class="bi bi-zoom-in"></i></button>
+                    <button type="button" class="btn btn-light" id="zoomOutBtn" title="Oddal"><i class="bi bi-zoom-out"></i></button>
+                    <button type="button" class="btn btn-light" id="resetViewBtn" title="Reset widoku"><i class="bi bi-arrow-counterclockwise"></i></button>
+                </div>
+            </div>
+            <div class="card-body p-3 p-md-4">
+                <div id="explorerGraphContainer" class="d-flex justify-content-center">
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 p-3 pt-0 d-flex justify-content-between align-items-center text-muted small">
+                <span><i class="bi bi-zoom-in me-1"></i> Użyj przycisków lupy, aby przybliżać i oddalać wykres</span>
+                <span>Współrzędne $(x, y)$</span>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0 rounded-4 p-3 bg-light">
+            <div class="d-flex flex-wrap align-items-center justify-content-center gap-2" id="mathAnalysisPills">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% set load_graph_explorer = true %}
+{% include 'components/_graph_scripts.html' %}
+{% endblock %}
