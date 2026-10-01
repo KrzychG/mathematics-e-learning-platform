@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% from "components/_exam_status.html" import render_exam_status_badge %}
+{% from "components/_kpi_card.html" import render_kpi_card %}
+{% from "components/_pagination.html" import render_pagination %}
+{% from "components/_time.html" import render_local_time %}
+{% block content %}
+<div class="h-100 overflow-y-auto p-4">
+    <div class="exam-container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h2 class="fw-bold text-primary mb-1">
+                    <i class="bi bi-clipboard2-check me-2"></i>Egzamin Testowy
+                </h2>
+                <p class="text-muted mb-0">Symulator próbnego egzaminu</p>
+            </div>
+        </div>
+        {% if active_attempt %}
+        <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center justify-content-between mb-4">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h6 class="mb-0 fw-bold">Masz już aktywny arkusz egzaminacyjny</h6>
+                    <small class="text-muted">
+                        Rozpoczęto o: {{ render_local_time(active_attempt.created_at, 'time-date') }}
+                    </small>
+                </div>
+            </div>
+            <a href="{{ url_for('exam.exam_session', attempt_id=active_attempt.id) }}" class="btn btn-sm btn-dark">
+                Wróć do zadań <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        {% endif %}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                    <div>
+                        <h4 class="fw-bold mb-3">Arkusz Próbny: {{ EXAM_REQUIRED_TASKS }} Zadań Zamkniętych</h4>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="d-flex align-items-center bg-light border rounded px-3 py-2">
+                                <i class="bi bi-list-check text-primary fs-5 me-2"></i>
+                                <div>
+                                    <div class="small text-muted" style="font-size: 0.75rem; line-height: 1;">Liczba zadań</div>
+                                    <strong class="text-dark">{{ EXAM_REQUIRED_TASKS }} pytań</strong>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center bg-light border rounded px-3 py-2">
+                                <i class="bi bi-award text-primary fs-5 me-2"></i>
+                                <div>
+                                    <div class="small text-muted" style="font-size: 0.75rem; line-height: 1;">Próg zdawalności</div>
+                                    <strong class="text-dark">{{ EXAM_PASS_PERCENT }}% (min. {{ EXAM_PASS_MIN_POINTS }} pkt)</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('exam.exam_generating') }}" class="btn btn-primary btn-lg px-4 py-3 shadow fw-bold text-nowrap">
+                        <i class="bi bi-pencil-square me-2"></i> Rozpocznij nowy egzamin
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% if total_exams > 0 %}
+        <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line me-2"></i>Twoje statystyki egzaminacyjne</h4>
+        <div class="row g-3 mb-4">
+            {{ render_kpi_card('Podjęte próby', total_exams, color='dark', col_class='col-md-3 col-6', variant='centered') }}
+            {{ render_kpi_card('Zdane arkusze', passed_exams, color='success', col_class='col-md-3 col-6', variant='centered') }}
+            {{ render_kpi_card('Najlepszy wynik', best_score, value_suffix='pkt', color='primary', col_class='col-md-3 col-6', variant='centered') }}
+            {{ render_kpi_card('Średnia skuteczność', avg_percentage ~ '%', color='info', col_class='col-md-3 col-6', variant='centered') }}
+        </div>
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-transparent border-0 pt-3 px-4">
+                <h5 class="fw-bold mb-0">Historia ukończonych arkuszy</h5>
+            </div>
+            <div class="table-responsive p-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">
+                        <tr>
+                            <th>Arkusz</th>
+                            <th>Data</th>
+                            <th>Wynik</th>
+                            <th>Status</th>
+                            <th class="text-end">Akcja</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attempts %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ att.title }}</div>
+                                <small class="text-muted">Arkusz #{{ att.id }}</small>
+                            </td>
+                            <td>{% if att.completed_at %}{{ render_local_time(att.completed_at, 'date-time') }}{% else %}{{ render_local_time(att.created_at, 'date-only') }}{% endif %}</td>
+                            <td>
+                                <span class="fw-bold {% if att.passed %}text-success{% else %}text-danger{% endif %}">
+                                    {{ att.score }} / {{ att.total_tasks }} ({{ att.percentage }}%)
+                                </span>
+                            </td>
+                            <td>
+                                {{ render_exam_status_badge(att.passed, uppercase=true) }}
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ url_for('exam.exam_result', attempt_id=att.id) }}" class="btn btn-sm btn-outline-primary">
+                                    Szczegóły arkusza <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {{ render_pagination(attempts_pagination, 'exam.exam_lobby', total_label='Łącznie ukończonych arkuszy', aria_label='Nawigacja po historii egzaminów') }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

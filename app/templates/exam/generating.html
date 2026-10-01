@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Generowanie zadań egzaminacyjnych - Axioma{% endblock %}
+{% block content %}
+<div class="container py-5 my-auto">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div id="examGeneratingCard" class="card shadow-sm border-0 rounded-4 text-center p-4 p-md-5" data-start-url="{{ url_for('exam.start_exam') }}" data-lobby-url="{{ url_for('exam.exam_lobby') }}" data-csrf-token="{{ csrf_token() }}">
+                <div class="card-body py-4">
+                    <div class="position-relative d-inline-block mb-4">
+                        <div class="spinner-border text-primary" style="width: 4.5rem; height: 4.5rem; border-width: 0.35rem;" role="status">
+                            <span class="visually-hidden">Generowanie zadań...</span>
+                        </div>
+                        <i class="bi bi-robot position-absolute top-50 start-50 translate-middle fs-3 text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-3">Trwa generowanie zadań</h3>
+                    <p class="text-muted fs-6 mb-4">
+                        Sztuczna inteligencja przygotowuje dla Ciebie arkusz {{ EXAM_REQUIRED_TASKS }} zadań.<br>
+                        Proszę czekać, za chwilę rozpocznie się egzamin...
+                    </p>
+                    <div class="progress rounded-pill mx-auto mb-3" style="height: 8px; max-width: 280px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 100%"></div>
+                    </div>
+                    <small class="text-muted d-block mt-3" style="font-size: 0.85rem;">
+                        <i class="bi bi-clock-history me-1"></i> Generowanie arkusza. Nie odświeżaj strony.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/exam/generating.js') }}"></script>{% endblock %}
