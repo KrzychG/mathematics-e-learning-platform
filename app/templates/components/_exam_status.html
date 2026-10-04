@@ -1,0 +1,34 @@
+{% macro render_exam_status_badge(
+    passed,
+    is_completed=true,
+    percentage=none,
+    uppercase=false,
+    padding_class='px-2 py-1',
+    extra_class=''
+) -%}
+{% if not is_completed %}
+    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle{% if extra_class %} {{ extra_class }}{% endif %}">Niedokończony</span>
+{% else %}
+    {% set label = ('ZDANY' if uppercase else 'Zdany') if passed else ('NIEZDANY' if uppercase else 'Niezdany') %}
+    {% set color = 'success' if passed else 'danger' %}
+    {% set icon = 'bi-check-circle' if passed else 'bi-x-circle' %}
+    {% if uppercase %}
+        <span class="badge bg-{{ color }} bg-opacity-10 text-{{ color }} border border-{{ color }} border-opacity-25 {{ padding_class }}{% if extra_class %} {{ extra_class }}{% endif %}">
+            <i class="bi {{ icon }} me-1"></i> {{ label }}
+        </span>
+    {% else %}
+        <span class="badge bg-{{ color }}-subtle text-{{ color }} border border-{{ color }}-subtle{% if extra_class %} {{ extra_class }}{% endif %}">
+            {%- if percentage is not none -%}
+                {{ label }} ({{ percentage }}%)
+            {%- else -%}
+                <i class="bi {{ icon }} me-1"></i>{{ label }}
+            {%- endif -%}
+        </span>
+    {% endif %}
+{% endif %}
+{%- endmacro %}
+{% macro render_exam_progress(percentage, passed, width_style='', height=5, wrapper_class='') -%}
+<div class="progress{% if wrapper_class %} {{ wrapper_class }}{% endif %}" style="height: {{ height }}px;{% if width_style %} {{ width_style }}{% endif %}">
+    <div class="progress-bar {% if passed %}bg-success{% else %}bg-danger{% endif %}" role="progressbar" style="width: {{ percentage }}%;"></div>
+</div>
+{%- endmacro %}

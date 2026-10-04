@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% from 'components/_answer_options.html' import render_interactive_options %}
+{% from 'components/_graph_card.html' import render_graph_card %}
+{% set hide_scratchpad = true %}
+{% block content %}
+<div class="h-100 d-flex flex-column overflow-hidden position-relative">
+    <header class="p-3 bg-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3 shadow-sm z-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-primary fs-6 px-3 py-2">
+                <i class="bi bi-file-earmark-text me-1"></i> Arkusz #{{ attempt.id }}
+            </span>
+            <div>
+                <h5 class="mb-0 fw-bold">Egzamin próbny</h5>
+                <small class="text-muted">{{ tasks|length }} pytań zamkniętych</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-success fw-bold px-3 shadow-sm" id="btnOpenSubmitModal" data-bs-toggle="modal" data-bs-target="#confirmSubmitModal">
+                <i class="bi bi-send-check me-1"></i> Oddaj arkusz
+            </button>
+        </div>
+    </header>
+    <div class="bg-body-tertiary border-bottom px-3 py-2">
+        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
+            <span class="text-muted fw-bold me-2 small d-none d-lg-inline text-uppercase" style="letter-spacing: 0.05em;">Zadania:</span>
+            {% for t in tasks %}
+            <button type="button" class="exam-pill-btn {% if loop.first %}active{% endif %} {% if answers.get(t.id|string) %}answered{% endif %}" data-task-index="{{ loop.index }}" data-task-id="{{ t.id }}" id="pillTask_{{ loop.index }}" title="Przejdź do zadania {{ loop.index }}">
+                {{ loop.index }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="flex-grow-1 overflow-y-auto p-4 bg-light">
+        <div class="exam-container">
+            {% for t in tasks %}
+            {% set task_index = loop.index %}
+            <div class="exam-task-card card shadow-sm border-0 mb-4" id="taskCard_{{ task_index }}" data-task-id="{{ t.id }}" style="display: {% if loop.first %}block{% else %}none{% endif %};">
+                <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2 fs-6">
+                        Zadanie {{ task_index }} z {{ tasks|length }}
+                    </span>
+                    <span class="text-muted small">Punktacja: <strong>0 – 1 pkt</strong></span>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="task-question-content fs-5 mb-4 text-dark lh-base">
+                        {{ t.question | format_math | sanitize_html | safe }}
+                    </div>
+                    {% if t.graph_spec %}
+                    {{ render_graph_card( 'examGraphContainer_' ~ t.id, 'Rysunek do zadania', title_icon='bi-graph-up text-primary', badge_text='Układ współrzędnych', badge_class='badge bg-light text-secondary border', wrapper_class='graph-card-wrapper border rounded-3 p-3 bg-white mb-4 shadow-sm', wrapper_style='max-width: 620px; margin: 0 auto;', header_class='d-flex justify-content-between align-items-center mb-2', title_class='text-muted small fw-semibold', container_class='exam-graph-container', container_style='min-height: 280px; position: relative;' ) }}
+                    {% endif %}
+                    <div class="options-container mt-4">
+                        {{ render_interactive_options( t.options_dict, mode='exam', input_name='exam_answer_' ~ t.id, id_prefix='opt_' ~ t.id ~ '_', selected_answer=answers.get(t.id|string, ''), task_id=t.id, task_index=task_index ) }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <footer class="p-3 bg-body border-top d-flex justify-content-between align-items-center shadow-sm z-3">
+        <button type="button" class="btn btn-outline-secondary" id="btnPrevTask" disabled>
+            <i class="bi bi-arrow-left me-1"></i> Poprzednie
+        </button>
+        <div class="text-muted small">
+            Odpowiedzi: <strong id="answeredCounter" class="text-primary">{{ answers|length }}</strong> z <strong>{{ tasks|length }}</strong>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnNextTask">
+            Następne <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+    </footer>
+</div>
+<div class="modal fade" id="confirmSubmitModal" tabindex="-1" aria-labelledby="confirmSubmitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold" id="confirmSubmitModalLabel">
+                    <i class="bi bi-question-circle text-primary me-2"></i>Oddanie arkusza egzaminacyjnego
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="fs-1 text-primary mb-3">
+                    <i class="bi bi-clipboard2-check"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Czy na pewno chcesz zakończyć egzamin?</h5>
+                <div id="modalUnansweredAlert" class="alert alert-warning border-0 my-3 d-none">
+                    Pozostałe pytania bez odpowiedzi: <strong id="modalUnansweredCount">0</strong>.
+                </div>
+                <p class="text-muted mb-0">
+                    Po oddaniu arkusza nie będzie możliwości zmiany odpowiedzi. Wynik oraz szczegółowe omówienie zadań otrzymasz natychmiast.
+                </p>
+            </div>
+            <div class="modal-footer border-top bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Wróć do zadań</button>
+                <form action="{{ url_for('exam.submit_exam', attempt_id=attempt.id) }}" method="POST">
+                    {% include '_csrf.html' %}
+                    <button type="submit" class="btn btn-success fw-bold px-4">
+                        <i class="bi bi-check-lg me-1"></i> Zakończ i sprawdź
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% set exam_graph_specs = {} %}
+{% for t in tasks %}
+    {% if t.graph_spec %}
+        {% set _ = exam_graph_specs.update({(t.id | string): t.graph_spec}) %}
+    {% endif %}
+{% endfor %}
+{% set exam_config = {
+    'attemptId': attempt.id,
+    'totalTasks': tasks|length,
+    'saveUrl': url_for('exam.save_answer', attempt_id=attempt.id),
+    'csrfToken': csrf_token(),
+    'graphSpecs': exam_graph_specs
+} %}<script id="examConfigData" type="application/json">{{ exam_config | tojson }}</script>{% include 'components/_graph_scripts.html' %}<script src="{{ url_for('static', filename='js/exam.js') }}"></script>{% endblock %}
