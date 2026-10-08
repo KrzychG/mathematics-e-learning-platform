@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% from "components/_graph_card.html" import render_graph_card %}
+{% from "components/_kpi_card.html" import render_kpi_card %}
+{% block content %}
+<div class="h-100 overflow-y-auto p-4 bg-light">
+    <div class="exam-container">
+        <div class="card shadow-sm border-0 mb-4 bg-white {% if attempt.passed %}border-top border-4 border-success{% else %}border-top border-4 border-danger{% endif %}">
+            <div class="card-body p-4 p-md-4 text-center">
+                <div class="mb-3">
+                    {% if attempt.passed %}
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 mb-2">
+                        <i class="bi bi-check-circle me-1"></i> EGZAMIN ZDANY
+                    </span>
+                    <h4 class="fw-bold text-dark mb-2">Gratulacje! Wynik pozytywny</h4>
+                    <p class="text-muted small max-w-600 mx-auto mb-0">
+                        Osiągnąłeś wymagany próg zdawalności (minimum {{ EXAM_PASS_PERCENT }}%). Twój wynik potwierdza opanowanie wymaganych umiejętności.
+                    </p>
+                    {% else %}
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 mb-2">
+                        <i class="bi bi-x-circle me-1"></i> EGZAMIN NIEZALICZONY
+                    </span>
+                    <h4 class="fw-bold text-dark mb-2">Próg zdawalności nie został osiągnięty</h4>
+                    <p class="text-muted small max-w-600 mx-auto mb-0">
+                        Do zdania egzaminu wymagane jest uzyskanie minimum {{ EXAM_PASS_PERCENT }}% punktów (min. {{ ((attempt.total_tasks * EXAM_PASS_PERCENT) / 100)|round|int }} z {{ attempt.total_tasks }} pkt). 
+                        Przeanalizuj poniższe wyjaśnienia krok po kroku i spróbuj ponownie!
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="row g-3 justify-content-center mt-3">
+                    {% set status_color = 'success' if attempt.passed else 'danger' %}
+                    {{ render_kpi_card( label='Punkty', value=attempt.score ~ ' / ' ~ attempt.total_tasks, color='dark', col_class='col-sm-4 col-md-3', variant='centered', card_class='p-3 bg-light rounded border', value_size_class='fs-4' ) }}
+                    {{ render_kpi_card(
+                        label='Wynik procentowy',
+                        value=attempt.percentage ~ '%',
+                        color=status_color,
+                        col_class='col-sm-4 col-md-3',
+                        variant='centered',
+                        card_class='p-3 bg-light rounded border',
+                        value_size_class='fs-4'
+                    ) }}
+                    {{ render_kpi_card( label='Status', value='Zdany' if attempt.passed else 'Niezdany', color=status_color, col_class='col-sm-4 col-md-3', variant='centered', card_class='p-3 bg-light rounded border', value_size_class='fs-4' ) }}
+                </div>
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+                    <form action="{{ url_for('exam.start_exam') }}" method="POST" class="m-0">
+                        {% include '_csrf.html' %}
+                        <button type="submit" class="btn btn-primary fw-bold px-4 py-2 shadow-sm">
+                            <i class="bi bi-arrow-repeat me-1"></i> Rozpocznij kolejny egzamin
+                        </button>
+                    </form>
+                    <a href="{{ url_for('exam.exam_lobby') }}" class="btn btn-outline-secondary px-4 py-2">
+                        <i class="bi bi-clock-history me-1"></i> Historia egzaminów
+                    </a>
+                    <a href="{{ url_for('learning.learning_desk') }}" class="btn btn-outline-secondary px-4 py-2">
+                        <i class="bi bi-journal-code me-1"></i> Wróć do Laboratorium
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <h4 class="fw-bold m-0">
+                <i class="bi bi-check2-square text-primary me-2"></i>Szczegółowa analiza zadań
+            </h4>
+            {% if breakdown %}
+            <div class="d-flex align-items-center gap-3 small text-muted">
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i>Poprawna</span>
+                <span><i class="bi bi-x-circle-fill text-danger me-1"></i>Błędna</span>
+                <span><i class="bi bi-dash-circle-fill text-secondary me-1"></i>Brak odpowiedzi</span>
+            </div>
+            {% endif %}
+        </div>
+        {% if breakdown %}
+        {% if attempt.total_tasks and (breakdown|length) < attempt.total_tasks %}
+        <div class="alert alert-info border-0 shadow-sm small mb-3">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            Wyświetlono {{ breakdown|length }} z {{ attempt.total_tasks }} zadań - pozostałe pytania nie są już dostępne.
+        </div>
+        {% endif %}
+        <div class="card shadow-sm border-0 mb-4 bg-white p-3" id="examQuickNavCard">
+            <div class="d-flex flex-wrap gap-2">
+                {% for item in breakdown %}
+                <a href="#taskCard_{{ item.number }}" class="btn btn-sm text-decoration-none fw-bold d-flex align-items-center justify-content-center {% if item.is_correct %} btn-success text-white {% elif item.is_unanswered %} btn-outline-secondary {% else %} btn-danger text-white {% endif %}" style="width: 38px; height: 38px; border-radius: 8px;">
+                    {{ item.number }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% for item in breakdown %}
+        <div class="card shadow-sm border-0 border-top border-4 {% if item.is_correct %}border-success{% elif item.is_unanswered %}border-warning{% else %}border-danger{% endif %} mb-4" id="taskCard_{{ item.number }}">
+            <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
+                <span class="badge bg-light text-dark border fw-bold px-3 py-2 fs-6">
+                    Zadanie {{ item.number }} z {{ attempt.total_tasks or breakdown|length }}
+                </span>
+                {% if item.is_correct %}
+                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 fs-6">
+                    <i class="bi bi-check-circle-fill me-1"></i> Poprawna (1 pkt)
+                </span>
+                {% elif item.is_unanswered %}
+                <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-50 px-3 py-2 fs-6 fw-bold">
+                    <i class="bi bi-dash-circle-fill text-warning me-1"></i> Brak odpowiedzi (0 pkt)
+                </span>
+                {% else %}
+                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 fs-6">
+                    <i class="bi bi-x-circle-fill me-1"></i> Błędna (0 pkt)
+                </span>
+                {% endif %}
+            </div>
+            <div class="card-body p-4">
+                <div class="fs-5 mb-4 text-dark lh-base">
+                    {{ item.task.question | format_math | sanitize_html | safe }}
+                </div>
+                {% if item.task.graph_spec %}
+                {{ render_graph_card( 'resultGraphContainer_' ~ item.task.id, 'Wykres do zadania', title_icon='bi-graph-up text-primary', wrapper_class='graph-card-wrapper border rounded-3 p-3 bg-white mb-4 shadow-sm', wrapper_style='max-width: 620px; margin: 0 auto;', header_class='d-flex justify-content-between align-items-center mb-2', title_class='text-muted small fw-semibold', container_class='result-graph-container', container_style='min-height: 260px; position: relative;', spec_json=item.task.graph_spec, spec_class='exam-result-graph-spec', spec_target='resultGraphContainer_' ~ item.task.id ) }}
+                {% endif %}
+                {% from "components/_answer_options.html" import render_result_options %}
+                {{ render_result_options(item.task.options_dict, item.user_answer, item.correct_answer, variant='exam') }}
+                {% if item.explanation %}
+                <div class="p-3 rounded border-start border-4 border-info bg-light mt-3">
+                    <h6 class="fw-bold text-primary mb-1">
+                        <i class="bi bi-lightbulb-fill me-1"></i> Wyjaśnienie krok po kroku:
+                    </h6>
+                    <div class="text-secondary small mt-1 lh-base">
+                        {{ item.explanation | format_math | sanitize_html | safe }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="card shadow-sm border-0 mb-4 bg-white p-4 text-center" id="examEmptyBreakdownCard">
+            <div class="py-3 text-muted">
+                <i class="bi bi-archive fs-2 d-block mb-2 text-secondary opacity-75"></i>
+                <h6 class="fw-bold mb-1 text-dark">Brak szczegółów dotyczących zadań</h6>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% include 'components/_graph_scripts.html' %}<script src="{{ url_for('static', filename='js/exam/result.js') }}"></script>{% endblock %}
