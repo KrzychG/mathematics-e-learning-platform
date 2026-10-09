@@ -1,0 +1,23 @@
+
+ACHIEVEMENTS_CATALOG = [
+    {"name": "Pierwsze Kroki", "description": "Rozwiązano pierwsze zadanie na platformie.", "trigger_condition": "first_task", "icon_class": "bi-rocket-takeoff text-primary"},
+    {"name": "W Dobrym Rytmie", "description": "Udzielono 3 poprawnych odpowiedzi z rzędu w jednym temacie.", "trigger_condition": "streak_3", "icon_class": "bi-fire text-danger"},
+    {"name": "Systematyczny Uczeń", "description": "Zrealizowano dzienny cel (5 poprawnie rozwiązanych zadań w ciągu jednego dnia).", "trigger_condition": "daily_goal_5", "icon_class": "bi-calendar-check-fill text-success"},
+    {"name": "Dziesiątka w Tarczę", "description": "Rozwiązano poprawnie 10 zadań matematycznych.", "trigger_condition": "correct_10", "icon_class": "bi-bullseye text-info"},
+    {"name": "Weteran Obliczeń", "description": "Rozwiązano poprawnie 25 zadań matematycznych.", "trigger_condition": "correct_25", "icon_class": "bi-lightning-charge-fill text-warning"},
+    {"name": "Adept Matematyki", "description": "Osiągnięto 3. poziom trudności w dowolnym temacie.", "trigger_condition": "level_3", "icon_class": "bi-graph-up-arrow text-primary"},
+    {"name": "Mistrz Działu", "description": "Osiągnięto maksymalny (5.) poziom trudności w dowolnym temacie.", "trigger_condition": "level_5", "icon_class": "bi-trophy-fill text-warning"},
+    {"name": "Wszechstronny Umysł", "description": "Rozpoczęto naukę w co najmniej 5 różnych tematach.", "trigger_condition": "topics_5", "icon_class": "bi-compass-fill text-success"},
+    {"name": "Podwójna Norma", "description": "Rozwiązano poprawnie co najmniej 10 zadań w ciągu jednego dnia.", "trigger_condition": "daily_goal_10", "icon_class": "bi-sun-fill text-warning"},
+    {"name": "Rozgrzewka Umysłu", "description": "Wykonano co najmniej 10 prób rozwiązania zadań treningowych.", "trigger_condition": "attempts_10", "icon_class": "bi-play-circle-fill text-info"},
+    {"name": "Złoty Rachmistrz", "description": "Rozwiązano poprawnie 50 zadań matematycznych.", "trigger_condition": "correct_50", "icon_class": "bi-award-fill text-warning"},
+    {"name": "Sto na Sto", "description": "Rozwiązano poprawnie 100 zadań matematycznych.", "trigger_condition": "correct_100", "icon_class": "bi-gem text-primary"},
+    {"name": "Snajper Egzaminacyjny", "description": "Utrzymano co najmniej 80% skuteczności przy minimum 20 rozwiązanych zadaniach.", "trigger_condition": "accuracy_80", "icon_class": "bi-crosshair text-success"},
+    {"name": "Stały Bywalec", "description": "Rozwiązywano zadania przez co najmniej 3 różne dni.", "trigger_condition": "active_days_3", "icon_class": "bi-calendar-week-fill text-primary"},
+    {"name": "Tydzień z Matmą", "description": "Rozwiązywano zadania przez co najmniej 7 różnych dni.", "trigger_condition": "active_days_7", "icon_class": "bi-calendar2-heart-fill text-danger"},
+    {"name": "Pretendent do Mistrza", "description": "Osiągnięto 4. poziom trudności w dowolnym temacie.", "trigger_condition": "level_4", "icon_class": "bi-bar-chart-line-fill text-info"},
+    {"name": "Odkrywca Programu", "description": "Rozpoczęto naukę w co najmniej 10 różnych tematach.", "trigger_condition": "topics_10", "icon_class": "bi-map-fill text-info"},
+    {"name": "Trzy Filary", "description": "Opanowano maksymalny (5.) poziom trudności w co najmniej 3 tematach.", "trigger_condition": "mastered_3", "icon_class": "bi-stars text-warning"},
+    {"name": "Próbna Zdobyta", "description": "Zdano próbny egzamin (co najmniej 30% punktów).", "trigger_condition": "exam_passed", "icon_class": "bi-patch-check-fill text-success"},
+    {"name": "Wynik Ekspercki", "description": "Uzyskano co najmniej 80% punktów na próbnym egzaminie.", "trigger_condition": "exam_high_80", "icon_class": "bi-mortarboard-fill text-primary"},
+]
