@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% from "components/_exam_status.html" import render_exam_progress, render_exam_status_badge %}
+{% from "components/_pagination.html" import render_pagination %}
+{% from "components/_ai_hint_modal.html" import render_ai_hint_modal, render_ai_hint_button %}
+{% from "components/_time.html" import render_local_time %}
+{% from "components/_kpi_card.html" import render_kpi_card %}
+{% macro render_task_answer_badge(answer, task_options, badge_class='bg-light text-dark border') -%}
+<span class="badge {{ badge_class }} px-2 py-1 fw-bold font-monospace">
+    {{ answer if answer else '-' }}
+</span>
+{% if task_options and answer and answer|upper in task_options %}
+    <span class="text-muted small ms-1 d-inline-block">
+        ({{ task_options[answer|upper] | format_math }})
+    </span>
+{% endif %}
+{%- endmacro %}
+{% block content %}
+<div class="h-100 w-100 overflow-y-auto p-4 p-md-5" data-math-typeset="true">
+    <div class="row mb-4">
+        <div class="col-12 text-center text-lg-start">
+            <h2 class="fw-bold text-dark"><i class="bi bi-clock-history text-primary me-2"></i>Historia Rozwiązań</h2>
+            <p class="text-muted fs-5">Przeglądaj wszystkie rozwiązane zadania z Laboratorium oraz wyniki próbnych egzaminów.</p>
+        </div>
+    </div>
+    <div class="row g-3 mb-4">
+        {{ render_kpi_card( label='Zadania w Laboratorium', value=total_tasks_count, color='primary', icon='bi-check2-circle', col_class='col-sm-6 col-xl-3', variant='circle', subtitle=correct_tasks_count ~ ' poprawnych', subtitle_class='text-success fw-semibold' ) }}
+        {{ render_kpi_card(
+            label='Skuteczność zadań',
+            value=task_accuracy ~ '%',
+            color='success',
+            icon='bi-bullseye',
+            col_class='col-sm-6 col-xl-3',
+            variant='circle',
+            progress_percent=task_accuracy
+        ) }}
+        {{ render_kpi_card(
+            label='Próbne Egzaminy',
+            value=total_exams_count,
+            color='warning',
+            icon='bi-mortarboard',
+            col_class='col-sm-6 col-xl-3',
+            variant='circle',
+            subtitle=passed_exams_count ~ ' zdanych (próg ' ~ EXAM_PASS_PERCENT ~ '%)',
+            subtitle_class='text-muted'
+        ) }}
+        {{ render_kpi_card(
+            label='Średni wynik egzaminów',
+            value=avg_exam_score ~ '%',
+            color='info',
+            icon='bi-graph-up',
+            col_class='col-sm-6 col-xl-3',
+            variant='circle',
+            progress_percent=avg_exam_score
+        ) }}
+    </div>
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+            <div class="btn-group p-1 bg-light rounded-pill border" role="group" aria-label="Wybór typu aktywności">
+                <a href="{{ url_for('dashboard.history', type='all', status=current_status) }}" class="btn rounded-pill px-3 py-1.5 small fw-semibold {% if current_type == 'all' %}btn-primary text-white shadow-xs{% else %}btn-light text-muted border-0{% endif %}">
+                    Wszystkie ({{ total_tasks_count + total_exams_count }})
+                </a>
+                <a href="{{ url_for('dashboard.history', type='tasks', status=current_status) }}" class="btn rounded-pill px-3 py-1.5 small fw-semibold {% if current_type == 'tasks' %}btn-primary text-white shadow-xs{% else %}btn-light text-muted border-0{% endif %}">
+                    <i class="bi bi-pencil-square me-1"></i> Zadania ({{ total_tasks_count }})
+                </a>
+                <a href="{{ url_for('dashboard.history', type='exams', status=current_status) }}" class="btn rounded-pill px-3 py-1.5 small fw-semibold {% if current_type == 'exams' %}btn-primary text-white shadow-xs{% else %}btn-light text-muted border-0{% endif %}">
+                    <i class="bi bi-mortarboard me-1"></i> Egzaminy ({{ total_exams_count }})
+                </a>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="btn-group p-1 bg-light rounded-pill border" role="group" aria-label="Filtrowanie statusu">
+                    <a href="{{ url_for('dashboard.history', type=current_type, status='all') }}" class="btn rounded-pill px-3 py-1.5 small fw-semibold {% if current_status == 'all' %}btn-dark text-white shadow-xs{% else %}btn-light text-muted border-0{% endif %}">
+                        Wszystkie statusy
+                    </a>
+                    <a href="{{ url_for('dashboard.history', type=current_type, status='correct') }}" class="btn rounded-pill px-3 py-1.5 small fw-semibold {% if current_status == 'correct' %}btn-success text-white shadow-xs{% else %}btn-light text-success border-0{% endif %}">
+                        <i class="bi bi-check-circle me-1"></i> Poprawne / Zdane
+                    </a>
+                    <a href="{{ url_for('dashboard.history', type=current_type, status='incorrect') }}" class="btn rounded-pill px-3 py-1.5 small fw-semibold {% if current_status == 'incorrect' %}btn-danger text-white shadow-xs{% else %}btn-light text-danger border-0{% endif %}">
+                        <i class="bi bi-x-circle me-1"></i> Błędne / Niezdane
+                    </a>
+                </div>
+                {% if pagination %}
+                <span class="text-muted small ms-2 d-none d-md-inline">
+                    Pozycji: <strong>{{ pagination.total }}</strong>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5 bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase tracking-wider">
+                    <tr>
+                        <th scope="col" class="ps-4 py-3 fw-semibold" style="width: 140px;">Typ i Status</th>
+                        <th scope="col" class="py-3 fw-semibold">Treść zadania / Arkusz egzaminacyjny</th>
+                        <th scope="col" class="py-3 fw-semibold" style="width: 170px;">Twoja odpowiedź</th>
+                        <th scope="col" class="py-3 fw-semibold" style="width: 170px;">Poprawna</th>
+                        <th scope="col" class="py-3 fw-semibold" style="width: 170px;">Dział / Moduł</th>
+                        <th scope="col" class="py-3 fw-semibold" style="width: 130px;">Data</th>
+                        <th scope="col" class="pe-4 py-3 text-end fw-semibold" style="width: 120px;">Szczegóły</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in attempts %}
+                        {% if attempt.is_exam %}
+                            <tr class="bg-warning bg-opacity-10" style="border-left: 4px solid var(--bs-warning);">
+                                <td class="ps-4 py-3">
+                                    <span class="badge bg-warning bg-opacity-25 text-dark fw-bold d-block mb-1">
+                                        <i class="bi bi-mortarboard me-1"></i>Egzamin
+                                    </span>
+                                    {{ render_exam_status_badge(attempt.passed, percentage=attempt.percentage, extra_class='d-inline-block') }}
+                                </td>
+                                <td class="py-3">
+                                    <div class="fw-bold text-dark fs-6 mb-1">
+                                        {{ attempt.title }}
+                                    </div>
+                                    <div class="text-muted small">
+                                        Arkusz egzaminacyjny &bull; Czas trwania: <strong>{{ attempt.formatted_time_spent }}</strong> &bull; {{ attempt.total_tasks }} pytań
+                                    </div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge bg-light text-dark border px-2.5 py-1.5 fw-bold font-monospace fs-6">
+                                        {{ attempt.score }} / {{ attempt.total_tasks }} pkt
+                                    </span>
+                                    {{ render_exam_progress(attempt.percentage, attempt.passed, width_style='width: 85px;', height=5, wrapper_class='mt-1') }}
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-muted small">
+                                        Próg zdawalności: <strong class="text-dark">min. {{ EXAM_PASS_PERCENT }}%</strong>
+                                    </span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge bg-light text-secondary border px-2 py-1">
+                                        <i class="bi bi-file-earmark-check me-1"></i>Egzamin
+                                    </span>
+                                </td>
+                                <td class="py-3 text-muted small text-nowrap">
+                                    {{ render_local_time(attempt.created_at) }}
+                                </td>
+                                <td class="pe-4 py-3 text-end">
+                                    <a href="{{ url_for('exam.exam_result', attempt_id=attempt.id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold">
+                                        Arkusz <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr style="border-left: 4px solid {% if attempt.is_correct %}var(--bs-success){% else %}var(--bs-danger){% endif %};">
+                                <td class="ps-4 py-3">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-bold d-block mb-1">
+                                        Zadanie
+                                    </span>
+                                    {% if attempt.is_correct %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                            <i class="bi bi-check2 me-1"></i>Dobrze
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                                            <i class="bi bi-x me-1"></i>Błąd
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3" style="max-width: 360px;">
+                                    {% if attempt.task %}
+                                        <div class="lh-base text-dark small mb-1 math-question-container">
+                                            {{ attempt.task.question | format_math | sanitize_html | safe }}
+                                        </div>
+                                        {% if not attempt.is_correct and attempt.llm_hint_provided %}
+                                            <div class="mt-2">
+                                                {{ render_ai_hint_button( attempt.id, attempt.llm_hint_provided, attempt.task, attempt.user_answer, is_correct=false, id_prefix='history-hint', button_label=' Zobacz wyjaśnienie błędu', fallback_topic='Zadanie', extra_btn_class='d-inline-flex align-items-center', font_size='0.78rem' ) }}
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted fst-italic">Zadanie niedostępne w bazie</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3">
+                                    {{ render_task_answer_badge(attempt.user_answer, attempt.task.options_dict if attempt.task else none) }}
+                                </td>
+                                <td class="py-3">
+                                    {% if attempt.task and attempt.task.correct_answer %}
+                                        {{ render_task_answer_badge( attempt.task.correct_answer, attempt.task.options_dict, badge_class='bg-success-subtle text-success border border-success-subtle' ) }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 text-muted small fw-medium">
+                                    {% if attempt.task and attempt.task.topic %}
+                                        <a href="{{ url_for('learning.practice', topic_id=attempt.task.topic_id) }}" class="text-decoration-none text-muted hover-underline" title="Ćwicz ten temat">
+                                            <i class="bi bi-folder2-open me-1 text-primary"></i>{{ attempt.task.topic.name }}
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 text-muted small text-nowrap">
+                                    {{ render_local_time(attempt.created_at) }}
+                                </td>
+                                <td class="pe-4 py-3 text-end text-muted small">
+                                    #{{ attempt.id }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 72px; height: 72px;">
+                                <i class="bi bi-inbox fs-2 text-secondary opacity-50"></i>
+                            </div>
+                            <h5 class="fw-bold mb-1 text-dark">Brak zarejestrowanych aktywności</h5>
+                            <p class="mb-3 text-muted">Nie masz jeszcze żadnych pozycji dla wybranego filtru.</p>
+                            <a href="{{ url_for('dashboard.history') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                Pokaż całą historię
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {{ render_pagination(pagination, 'dashboard.history', total_label='Łącznie pozycji', extra_params={'type': current_type, 'status': current_status}, aria_label='Nawigacja po historii') }}
+    </div>
+</div>
+{{ render_ai_hint_modal(title='Wyjaśnienie błędu', answer_label='Twoja odpowiedź') }}
+{% endblock %}
