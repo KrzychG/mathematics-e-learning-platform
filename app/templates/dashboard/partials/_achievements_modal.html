@@ -1,0 +1,68 @@
+{% if achievements_gallery %}
+{% from "components/_time.html" import render_local_time %}
+<div class="modal fade" id="allAchievementsModal" tabindex="-1" aria-labelledby="allAchievementsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-bottom px-4 py-3">
+                <div>
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0" id="allAchievementsModalLabel">
+                        <i class="bi bi-trophy-fill text-warning"></i>
+                        <span>Wszystkie Osiągnięcia</span>
+                    </h5>
+                    <div class="small text-muted mt-1">
+                        Odblokowano <strong class="text-body">{{ earned_badges|length }}</strong> z <strong>{{ total_achievements_count }}</strong> dostępnych osiągnięć
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body p-4">
+                {% set pct_unlocked = ((earned_badges|length / total_achievements_count) * 100)|round|int if total_achievements_count > 0 else 0 %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Postęp kolekcji</span>
+                        <span class="fw-bold text-primary">{{ pct_unlocked }}%</span>
+                    </div>
+                    <div class="progress rounded-pill" style="height: 8px; background-color: var(--app-border);">
+                        <div class="progress-bar bg-primary rounded-pill" role="progressbar" style="width: {{ pct_unlocked }}%;" aria-valuenow="{{ pct_unlocked }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    {% for item in achievements_gallery %}
+                    {% set ach = item.achievement %}
+                    <div class="col-md-6">
+                        <div class="achievement-card rounded-4 p-3 h-100 d-flex align-items-start gap-3 {% if item.unlocked %}achievement-card--unlocked{% else %}achievement-card--locked{% endif %}">
+                            <div class="achievement-card__icon rounded-circle border d-flex justify-content-center align-items-center flex-shrink-0 shadow-sm" style="width: 48px; height: 48px;">
+                                <i class="bi {{ ach.icon_class }} fs-5"></i>
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                    <h6 class="fw-bold mb-0 text-body">{{ ach.name }}</h6>
+                                    {% if item.unlocked %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill flex-shrink-0" style="font-size: 0.65rem;">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Odblokowane
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill flex-shrink-0" style="font-size: 0.65rem;">
+                                            <i class="bi bi-lock-fill me-1"></i>Zablokowane
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <p class="small text-muted mb-0 lh-sm">{{ ach.description }}</p>
+                                {% if item.unlocked and item.unlocked_at %}
+                                <div class="small text-muted mt-2" style="font-size: 0.7rem;">
+                                    <i class="bi bi-clock me-1"></i>Zdobyto: {{ render_local_time(item.unlocked_at, fmt='date-time') }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer border-top px-4 py-3">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
