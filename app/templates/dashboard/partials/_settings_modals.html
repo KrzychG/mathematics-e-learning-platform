@@ -1,0 +1,64 @@
+{% from "components/_modal.html" import render_modal %}
+{% macro render_password_confirm_modal(modal_id, title, title_icon, action_url, intro_text, field_label, submit_label, submit_icon=none, warning_html='') -%}
+{% call render_modal(
+    modal_id,
+    title,
+    icon_class=title_icon,
+    title_class='text-danger',
+    content_class='border-0 shadow-lg rounded-4',
+    header_class='border-0 pb-0',
+    has_form=false,
+    show_footer=false
+) %}
+    {% if warning_html %}{{ warning_html | safe }}{% endif %}
+    <p class="text-muted small mb-4">{{ intro_text }}</p>
+    <form action="{{ action_url }}" method="POST">
+        {% include '_csrf.html' %}
+        <div class="mb-4">
+            <label class="form-label text-muted small fw-bold tracking-wide">{{ field_label }}</label>
+            <input type="password" name="password" class="form-control form-control-lg bg-light border-0" required placeholder="Wpisz swoje hasło">
+        </div>
+        <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold rounded-pill shadow-sm">
+            {% if submit_icon %}<i class="bi {{ submit_icon }} me-1"></i> {% endif %}{{ submit_label }}
+        </button>
+    </form>
+{% endcall %}
+{%- endmacro %}
+{% call render_modal(
+    'setup2faModal',
+    'Konfiguracja 2FA',
+    icon_class='bi-shield-lock-fill text-primary',
+    content_class='border-0 shadow-lg rounded-4',
+    header_class='border-0 pb-0',
+    has_form=false,
+    show_footer=false
+) %}
+    <p class="text-muted small mb-3">Zeskanuj poniższy kod QR w aplikacji uwierzytelniającej (np. Google Authenticator, Microsoft Authenticator):</p>
+    <div class="text-center my-3">
+        {% if qr_code_data %}
+            <img src="{{ qr_code_data }}" alt="Kod QR 2FA" class="img-fluid border rounded-3 p-2 bg-white shadow-sm" style="max-width: 200px;">
+        {% endif %}
+    </div>
+    {% if pending_secret %}
+    <div class="bg-light p-3 rounded-3 text-center mb-4 border">
+        <small class="text-muted d-block mb-1">Klucz ręczny:</small>
+        <code class="fw-bold fs-6 user-select-all text-dark">{{ pending_secret }}</code>
+    </div>
+    {% endif %}
+    <form action="{{ url_for('dashboard.enable_2fa') }}" method="POST">
+        {% include '_csrf.html' %}
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">WPROWADŹ 6-CYFROWY KOD Z APLIKACJI</label>
+            <input type="text" name="totp_token" maxlength="6" pattern="[0-9]{6}" class="form-control form-control-lg text-center fs-3 fw-bold bg-light border-0" style="letter-spacing: 0.25em;" placeholder="000000" required autocomplete="one-time-code">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm">Aktywuj 2FA</button>
+    </form>
+{% endcall %}
+{{ render_password_confirm_modal( 'disable2faModal', 'Wyłącz weryfikację 2FA', 'bi-shield-x text-danger', url_for('dashboard.disable_2fa'), 'Aby wyłączyć weryfikację dwuetapową i powrócić do logowania tylko hasłem, wprowadź swoje aktualne hasło do konta:', 'AKTUALNE HASŁO', 'Wyłącz weryfikację dwuetapową' ) }}
+{% set delete_warning_html %}
+<div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-danger small mb-4">
+    <i class="bi bi-shield-exclamation me-1 fs-6"></i>
+    <strong>Uwaga!</strong> Ta operacja jest <strong>nieodwracalna</strong>. Twoje konto, historia rozwiązań, postępy, odznaki oraz przesłany awatar zostaną bezpowrotnie usunięte.
+</div>
+{% endset %}
+{{ render_password_confirm_modal( 'deleteAccountModal', 'Potwierdź usunięcie konta', 'bi-exclamation-triangle-fill text-danger', url_for('dashboard.delete_account'), 'Aby potwierdzić swoją tożsamość i trwale usunąć konto, wprowadź swoje aktualne hasło:', 'AKTUALNE HASŁO DO KONTA', 'Trwale usuń moje konto', submit_icon='bi-trash3-fill', warning_html=delete_warning_html ) }}
