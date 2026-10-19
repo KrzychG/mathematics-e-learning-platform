@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% from "components/_form_field.html" import render_wtform_field %}
+{% macro render_a11y_switch(input_id, icon_class, title) -%}
+<div class="col-12">
+    <div class="d-flex justify-content-between align-items-center p-4 border rounded-4 bg-light bg-opacity-50" style="border-color: var(--app-border) !important;">
+        <div class="pe-4">
+            <h6 class="fw-bold mb-1 text-dark d-flex align-items-center">
+                <i class="bi {{ icon_class }} text-primary me-2"></i> {{ title }}
+            </h6>
+            <p class="small text-muted mb-0">{{ caller() }}</p>
+        </div>
+        <div class="form-check form-switch fs-3 m-0">
+            <input class="form-check-input shadow-none" type="checkbox" id="{{ input_id }}">
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+{% block content %}
+<div class="h-100 w-100 overflow-y-auto p-4 p-md-5">
+    <div class="container-fluid max-w-1200 mx-auto p-0" style="max-width: 1200px;">
+        <div class="mb-5 border-bottom pb-4" style="border-color: var(--app-border) !important;">
+            <h2 class="fw-bold mb-1 text-dark">Ustawienia Konta</h2>
+            <p class="text-muted fs-6 mb-0">Zarządzaj swoim profilem, wyglądem i bezpieczeństwem konta.</p>
+        </div>
+        <div class="row g-5">
+            <div class="col-lg-3">
+                <div class="nav flex-column nav-pills custom-pills" role="tablist" aria-orientation="vertical">
+                    <button class="nav-link active text-start mb-2 fw-bold" data-bs-toggle="pill" data-bs-target="#profile" type="button" role="tab">
+                        <i class="bi bi-person-circle me-2"></i> Mój Profil
+                    </button>
+                    <button class="nav-link text-start mb-2 fw-bold" data-bs-toggle="pill" data-bs-target="#accessibility" type="button" role="tab">
+                        <i class="bi bi-universal-access me-2"></i> Dostępność
+                    </button>
+                    <button class="nav-link text-start mb-4 fw-bold" data-bs-toggle="pill" data-bs-target="#security" type="button" role="tab">
+                        <i class="bi bi-shield-lock me-2"></i> Bezpieczeństwo
+                    </button>
+                    <div class="border-top pt-3 mb-2" style="border-color: var(--app-border) !important;"></div>
+                    <button class="nav-link text-start text-danger fw-bold" data-bs-toggle="pill" data-bs-target="#danger-zone" type="button" role="tab">
+                        <i class="bi bi-exclamation-triangle me-2"></i> Zarządzanie kontem
+                    </button>
+                </div>
+            </div>
+            {% from 'components/_avatar.html' import render_avatar %}
+            <div class="col-lg-9">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="profile" role="tabpanel">
+                        <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden student-profile-card">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center g-4">
+                                    <div class="col-auto">
+                                        <div class="position-relative">
+                                            {{ render_avatar(user, size=88, img_classes='student-avatar-border shadow-sm', fallback_classes='bg-primary student-avatar-initials d-flex student-avatar-border shadow-sm', font_size='2.5rem') }}
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                            <h4 class="fw-bold text-dark mb-0 me-1">{{ user.display_name }}</h4>
+                                            {% if user.is_admin %}
+                                                <span class="badge bg-danger rounded-pill px-3 py-1 fw-bold"><i class="bi bi-shield-check me-1"></i>Administrator</span>
+                                            {% else %}
+                                                <span class="badge bg-primary rounded-pill px-3 py-1 fw-bold"><i class="bi bi-mortarboard-fill me-1"></i>Uczeń</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="d-flex flex-wrap align-items-center gap-3 text-muted small mb-3">
+                                            <span><i class="bi bi-envelope me-1 text-primary"></i>{{ user.email }}</span>
+                                            <span>•</span>
+                                            <span><i class="bi bi-calendar-check me-1 text-primary"></i>W Axioma od: <strong class="text-dark">{{ student_stats.member_since if student_stats else '-' }}</strong></span>
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div class="profile-stat-box rounded-3 px-3 py-1 text-center shadow-sm">
+                                                <small class="text-muted d-block" style="font-size: 0.65rem;">ZADANIA</small>
+                                                <span class="fw-bold text-dark fs-6">{{ student_stats.total_attempts if student_stats else 0 }}</span>
+                                            </div>
+                                            <div class="profile-stat-box rounded-3 px-3 py-1 text-center shadow-sm">
+                                                <small class="text-muted d-block" style="font-size: 0.65rem;">SKUTECZNOŚĆ</small>
+                                                <span class="fw-bold text-success fs-6">{{ student_stats.accuracy if student_stats else 0 }}%</span>
+                                            </div>
+                                            <div class="profile-stat-box rounded-3 px-3 py-1 text-center shadow-sm">
+                                                <small class="text-muted d-block" style="font-size: 0.65rem;">ODZNAKI</small>
+                                                <span class="fw-bold text-warning fs-6"><i class="bi bi-trophy-fill text-warning me-1"></i>{{ student_stats.badges_count if student_stats else 0 }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-dark mb-4">Zarządzanie Profilem</h5>
+                                <div class="d-flex align-items-center mb-4">
+                                    {{ render_avatar(user, size=70, classes='me-4', img_classes='border shadow-sm', fallback_classes='bg-primary bg-opacity-10 text-primary d-flex shadow-sm', font_size='2rem') }}
+                                    <div>
+                                        <form id="avatarUploadForm" action="{{ url_for('dashboard.upload_avatar') }}" method="POST" enctype="multipart/form-data" class="d-inline">
+                                            {% include '_csrf.html' %}
+                                            <input type="file" name="avatar" id="avatarFileInput" class="d-none" accept=".png,.jpg,.jpeg,.webp,.gif" onchange="document.getElementById('avatarUploadForm').submit()">
+                                            <button class="btn btn-outline-primary btn-sm fw-bold mb-1" type="button" onclick="document.getElementById('avatarFileInput').click()">
+                                                <i class="bi bi-camera me-1"></i> Zmień awatar
+                                            </button>
+                                        </form>
+                                        {% if user.avatar_filename %}
+                                            <form action="{{ url_for('dashboard.delete_avatar') }}" method="POST" class="d-inline ms-2" data-confirm-title="Usunięcie awatara" data-confirm-message="Czy na pewno chcesz usunąć awatar i wrócić do domyślnych inicjałów?" data-confirm-label="Usuń awatar" data-confirm-variant="danger" data-confirm-icon="bi-trash">
+                                                {% include '_csrf.html' %}
+                                                <button class="btn btn-outline-danger btn-sm fw-bold mb-1" type="submit">
+                                                    <i class="bi bi-trash me-1"></i> Usuń
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <p class="small text-muted mb-0">Obsługiwane formaty: JPG, PNG, WEBP, GIF (maks. 3 MB)</p>
+                                    </div>
+                                </div>
+                                <form action="{{ url_for('dashboard.update_profile') }}" method="POST" class="row g-4">
+                                    {% include '_csrf.html' %}
+                                    {{ render_wtform_field( profile_form.first_name, label_text='IMIĘ', label_class='form-label text-muted small fw-bold tracking-wide', wrapper_class='col-md-6', field_class='form-control form-control-lg bg-light border-0', required=true, minlength=2, maxlength=50, error_display_block=true ) }}
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold tracking-wide">ADRES E-MAIL</label>
+                                        <input type="email" class="form-control form-control-lg bg-light border-0" value="{{ user.email }}" readonly>
+                                        <div class="form-text">Adres e-mail jest przypisany na stałe do Twojego konta.</div>
+                                    </div>
+                                    <div class="col-12 mt-4">
+                                        <button type="submit" class="btn btn-primary fw-bold px-4">Zapisz zmiany</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="accessibility" role="tabpanel">
+                        <h4 class="fw-bold text-dark mb-4">Ułatwienia Dostępności</h4>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="p-4 border rounded-4 bg-light bg-opacity-50" style="border-color: var(--app-border) !important;">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-type text-primary fs-3 me-3"></i>
+                                        <div>
+                                            <h6 class="fw-bold mb-1 text-dark">Rozmiar tekstu</h6>
+                                            <p class="small text-muted mb-0">Zwiększa czcionkę w zadaniach matematycznych, teorii oraz interfejsie platformy.</p>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group w-100 shadow-sm" role="group">
+                                        <input type="radio" class="btn-check" name="textSize" id="textSize1" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="textSize1"><small>A-</small> Mały</label>
+                                        <input type="radio" class="btn-check" name="textSize" id="textSize2" autocomplete="off" checked>
+                                        <label class="btn btn-outline-primary fw-bold" for="textSize2">A Domyślny</label>
+                                        <input type="radio" class="btn-check" name="textSize" id="textSize3" autocomplete="off">
+                                        <label class="btn btn-outline-primary fs-5 fw-bold" for="textSize3">A+ Duży</label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% call render_a11y_switch('dyslexiaFont', 'bi-fonts', 'Czcionka dla dyslektyków') %}
+                                Podmienia główny krój pisma na <strong>OpenDyslexic</strong>.
+                            {% endcall %}
+                            {% call render_a11y_switch('reduceMotion', 'bi-camera-video-off', 'Redukcja animacji') %}
+                                Wyłącza płynne przejścia interfejsu.
+                            {% endcall %}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="security" role="tabpanel">
+                        <h4 class="fw-bold text-dark mb-4">Bezpieczeństwo konta</h4>
+                        <div class="mb-5 border-bottom pb-4" style="border-color: var(--app-border) !important;">
+                            <h5 class="fw-bold text-dark mb-3 fs-6">Hasło do platformy</h5>
+                            <form action="{{ url_for('dashboard.update_password') }}" method="POST" class="row g-3" style="max-width: 500px;">
+                                {% include '_csrf.html' %}
+                                {{ render_wtform_field( password_form.current_password, label_text='AKTUALNE HASŁO', label_class='form-label text-muted small fw-bold tracking-wide', wrapper_class='col-12 mb-2', field_class='form-control bg-light border-0', required=true, error_display_block=true ) }}
+                                {{ render_wtform_field( password_form.new_password, label_text='NOWE HASŁO', label_class='form-label text-muted small fw-bold tracking-wide', wrapper_class='col-12 mb-2', field_class='form-control bg-light border-0', required=true, minlength=PASSWORD_MIN_LENGTH, error_display_block=true ) }}
+                                {{ render_wtform_field( password_form.confirm_password, label_text='POWTÓRZ NOWE HASŁO', label_class='form-label text-muted small fw-bold tracking-wide', wrapper_class='col-12 mb-3', field_class='form-control bg-light border-0', required=true, minlength=PASSWORD_MIN_LENGTH, error_display_block=true ) }}
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary fw-bold px-4">Zaktualizuj hasło</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-shield-check text-primary fs-2 me-3 mt-1"></i>
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-1 fs-6">Weryfikacja dwuetapowa (2FA)</h5>
+                                        <p class="small text-muted mb-0" style="max-width: 450px;">Dodaj dodatkową warstwę zabezpieczeń. Przy logowaniu poprosimy Cię o sześciocyfrowy kod z aplikacji (np. Google Authenticator).</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if user.is_otp_enabled %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 me-2">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Aktywna
+                                        </span>
+                                        <button class="btn btn-outline-danger fw-bold hover-lift btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#disable2faModal">
+                                            Wyłącz 2FA
+                                        </button>
+                                    {% else %}
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border px-3 py-2 me-2">
+                                            Nieaktywna
+                                        </span>
+                                        <button class="btn btn-outline-primary fw-bold hover-lift btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#setup2faModal">
+                                            Skonfiguruj
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="danger-zone" role="tabpanel">
+                        <h4 class="fw-bold text-danger mb-4">Zarządzanie kontem</h4>
+                        <div class="border border-danger border-opacity-25 rounded-4 p-4 mb-4">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">Zresetuj Postępy</h6>
+                                    <p class="small text-muted mb-0">Reset postępów i statystyk. Rozpoczniesz naukę od zera.</p>
+                                </div>
+                                <form action="{{ url_for('dashboard.reset_progress') }}" method="POST" data-confirm-title="Reset postępów nauki" data-confirm-message="Czy na pewno chcesz zresetować wszystkie postępy?" data-confirm-warning="Twój poziom adaptacyjny oraz historia postępów w tematach zostaną wyzerowane." data-confirm-label="Wyczyść postępy" data-confirm-variant="danger" data-confirm-icon="bi-arrow-counterclockwise">
+                                    {% include '_csrf.html' %}
+                                    <button type="submit" class="btn btn-outline-danger fw-bold">Wyczyść postępy</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="border border-danger border-opacity-25 rounded-4 p-4 bg-danger bg-opacity-10">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <h6 class="fw-bold text-danger mb-1">Usuń konto permanentnie</h6>
+                                    <p class="small text-danger opacity-75 mb-0">Tej operacji nie można cofnąć. Wszystkie Twoje dane zostaną trwale wykasowane z serwera.</p>
+                                </div>
+                                <button type="button" class="btn btn-danger fw-bold hover-lift" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                    <i class="bi bi-trash3 me-1"></i> Usuń moje konto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "dashboard/partials/_settings_modals.html" %}
+{% endblock %}
