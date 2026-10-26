@@ -1,0 +1,16 @@
+<div class="row mb-4">
+    <div class="col-12">
+        <ul class="nav nav-pills border-bottom pb-3 gap-2">
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'users' %}active bg-primary text-white fw-semibold shadow-sm{% else %}text-secondary fw-medium bg-white border{% endif %}" href="{{ url_for('admin.admin_dashboard') }}">
+                    <i class="bi bi-people-fill me-2"></i>Użytkownicy i Uprawnienia
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'content' %}active bg-primary text-white fw-semibold shadow-sm{% else %}text-secondary fw-medium bg-white border{% endif %}" href="{{ url_for('admin.admin_content') }}">
+                    <i class="bi bi-journal-bookmark-fill me-2"></i>Kategorie i Tematy
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
