@@ -1,3 +1,14 @@
+"""
+Serwis Renderowania Artykułów Teoretycznych
+ Przekształca 77 plikow Markdown z bazy wiedzy na bezpieczny kod HTML
+ mechanizm ochrony formuł matematycznych
+Zastępuje wzory LaTeX unikalnymi tokenami zastępczymi przed konwersją Markdown
+Zapobiega niszczeniu składni matematycznej przez znaki '_' czy '*' w tekście
+Przywraca oryginalne formuły po zakończeniu parsowania Markdown.
+Automatycznie formatuje tabele pod responsywne kontenery Bootstrap 5
+Końcowy kod HTML jest sanityzowany przez Bleach i buforowany w pamięci
+"""
+
 import functools
 import re
 import markdown

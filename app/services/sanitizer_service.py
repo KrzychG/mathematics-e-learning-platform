@@ -1,3 +1,12 @@
+"""
+Serwis Sanityzacji Treści HTML i Bezpieczeństwa
+Ochrona przed atakami XSS przy użyciu biblioteki Bleach
+Zapewnia białą listę tagów i atrybutów HTML dla artykułów teorii i edytora CMS
+Filtruje szkodliwe skrypty <script>, <style>
+Weryfikuje sensowność wprowadzonej treści 
+Normalizuje zapis formuł matematycznych pod silnik MathJax 3 / KaTeX 
+"""
+
 import html
 import re
 import bleach

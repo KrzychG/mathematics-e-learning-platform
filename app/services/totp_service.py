@@ -1,5 +1,9 @@
 """
-Obsługa uwierzytelniania dwuetapowego (2FA / TOTP) z wykorzystaniem biblioteki PyOTP.
+Serwis Uwierzytelniania Dwuetapowego 2FA TOTP
+Realizuje standard RFC 6238 kompatybilny z Google i Microsoft Authenticator
+valid_window=1 dopuszcza kody z sąsiednich okien 30-sekundowych na wypadek asynchronii zegara w telefonie
+ochrona przed atakami powtórzeniowymi
+każdy poprawny kod zostaje zablokowany przed ponownym użyciem przez 120 sekund
 """
 import time
 import threading

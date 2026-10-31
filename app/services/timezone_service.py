@@ -1,3 +1,13 @@
+"""
+Serwis Zarządzania Czasem i Strefami Czasowymi
+zapis w bazie w UTC, logika kalendarzowa i wyświetlanie w czasie lokalnym 
+fallback wyznaczający granice czasu letniego/zimowego w Polsc
+w przypadku uruchomienia na systemie Windows pozbawionym systemowej bazy tzdata.
+Przelicza lokalną północ na UTC local_date_to_utc_midnight / get_today_start_utc co umożliwia
+ filtrowanie indeksowanych kolumn SQL przy zachowaniu polskiej doby kalendarzowej
+Formatowanie relatywne i bezwzględne na frontendzie format_activity_time, format_local_datetime
+"""
+
 import os
 from datetime import date, datetime, timezone, timedelta
 

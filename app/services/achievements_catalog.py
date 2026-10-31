@@ -1,4 +1,11 @@
 
+"""
+Katalog Osiągnięć i Odznak Grywalizacji.
+Centralna definicja wszystkich odznak przyznawanych uczniom za postępy w nauce.
+Wykorzystywany przez seed.py / progress_service.py do synchronizacji tabeli achievements w bazie danych.
+Każda odznaka posiada unikalny trigger_condition sprawdzany automatycznie po rozwiązaniu zadania/egzaminu.
+"""
+
 ACHIEVEMENTS_CATALOG = [
     {"name": "Pierwsze Kroki", "description": "Rozwiązano pierwsze zadanie na platformie.", "trigger_condition": "first_task", "icon_class": "bi-rocket-takeoff text-primary"},
     {"name": "W Dobrym Rytmie", "description": "Udzielono 3 poprawnych odpowiedzi z rzędu w jednym temacie.", "trigger_condition": "streak_3", "icon_class": "bi-fire text-danger"},

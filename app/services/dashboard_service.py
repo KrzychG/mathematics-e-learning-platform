@@ -1,3 +1,12 @@
+"""
+Serwis Pulpitu Ucznia i Wizualizacji Danych 
+Przygotowuje dane analityczne dla widoku głównego ucznia 
+Oblicza wykres skumulowanej skuteczności z ostatnich 7 dni z podziałem na dni w czasie lokalnym
+Buduje oś czasu Ostatnia Aktywność
+Przetwarza stan opanowania materiału wg 13 kategorii sylabusa maturalnego i rekomenduje powtórki
+Oblicza progres realizacji celu dziennego
+"""
+
 from collections import Counter
 from datetime import datetime, timedelta
 from flask import url_for

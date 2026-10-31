@@ -1,3 +1,11 @@
+"""
+Serwis Wysyłki Poczty elektronicznej smtp
+Obsługuje wysyłkę wiadomości transakcyjnych
+Domyślnie działa asynchronicznie w osobnym wątku tła aby nie blokować UI
+Wspiera szyfrowanie STARTTLS (port 587) oraz SSL/TLS
+Zawiera tryb mock/bezpieczny: przy braku konfiguracji SMTP loguje linki w konsoli zamiast rzucać błędem
+"""
+
 import logging
 import smtplib
 import threading

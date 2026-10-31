@@ -1,3 +1,13 @@
+"""
+Serwis Postępów Dydaktycznych i Grywalizacji
+Realizuje adaptacyjny algorytm poziomu trudności 
+3 poprawne odpowiedzi z rzędu w temacie -> awans
+2 błędne odpowiedzi z rzędu -> spadek
+Silnik przyznawania odznak 
+Weryfikuje warunki serie, cele dzienne, dni aktywności, wyniki egzaminu i odblokowuje odznaki
+Błyskawiczna agregacja statystyk ucznia skuteczność, dzisiejsze zadania, egzaminy pojedynczym zapytaniem SQL
+"""
+
 from app.services.timezone_service import get_today_start_utc, to_local_time, utc_now
 from sqlalchemy import func, case, and_
 from app import db

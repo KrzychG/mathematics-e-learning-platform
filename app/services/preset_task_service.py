@@ -1,3 +1,11 @@
+"""
+Serwis Banku Predefiniowanych Zadań Egzaminacyjnych
+Ładuje i buforuje wzorcowe zadania z content/preset_tasks.json.
+Dostarcza zestaw pytań do próbnego egzaminu
+Zapewnia zadania awaryjne dla trybu offline dla każdego poziomu trudności 
+Odpowiada za bezpieczne tworzenie unikalnych zadań w bazie
+"""
+
 import os
 import re
 import json

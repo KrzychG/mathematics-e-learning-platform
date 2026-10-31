@@ -1,3 +1,15 @@
+"""
+Serwis Zarządzania Użytkownikami i Awatarami
+Bezpieczne przetwarzanie i walidacja plików graficznych awatarów za pomocą Pillow:
+Ograniczenie rozmiaru do 3 MB i rozszerzeń JPG, PNG, WEBP, GIF
+Ochrona przed atakiem Pixel Flood
+Sprawdzenie integralności nagłówków binarnych grafiki 
+Przeskalowanie do standardu 512x512 px filtrem Lanczos
+Ochrona przed samoblokadą administratora
+Zapobiega przypadkowemu usunięciu, dezaktywacji lub odebraniu roli ostatniemu aktywnemu adminowi w systemie.
+usuwanie kont i powiązanych zasobów fizycznych na dysku.
+"""
+
 import os
 import secrets
 from PIL import Image

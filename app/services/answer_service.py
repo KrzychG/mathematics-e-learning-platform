@@ -1,3 +1,11 @@
+"""
+Deterministyczny Silnik Weryfikacji Odpowiedzi ABCD.
+sprawdzanie odpowiedzi ucznia w zadaniach zamkniętych 
+Normalizuje warianty usuwa kropki, nawiasy, znaki LaTeX
+ Mapuje treść opcji na literę, jeśli model LLM lub formularz zwrócił tekst zamiast litery
+Ochrona przed DoS/ReDoS poprzez twardy limit długości ciągów
+"""
+
 VALID_CHOICES = frozenset({'A', 'B', 'C', 'D'})
 
 

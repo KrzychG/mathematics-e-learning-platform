@@ -1,3 +1,13 @@
+"""
+Serwis Sztucznej Inteligencji LLM
+integracja z modelem Google Gemini 3.8 Flash za pośrednictwem OpenAI Python SDK
+Dynamiczne generowanie zadań matematycznych z formatowaniem LaTeX
+Dydaktyczny silnik wskazówek generuje podpowiedź po błędzie bez zdradzania gotowego wyniku
+Generowanie pełnego arkusza próbnego egzaminu (20 zadań) w jednym spójnym zapytaniu
+Algorytm anty-duplikacji zapobiegający klonowaniu niemal identycznych zadań
+Niezawodny tryb offline fallback zapewniający ciągłośc działania bez klucza API
+"""
+
 import re
 import json
 import time

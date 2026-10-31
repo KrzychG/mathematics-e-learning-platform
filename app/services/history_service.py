@@ -1,3 +1,11 @@
+"""
+Serwis Historii i Audytu Aktywności Ucznia
+Zasila widok pełnej historii rozwiązywania zadań i egzaminów
+Wykorzystuje wrapper polimorficzny HistoryEntry łączący próby zadań i egzaminy
+Obsługuje zaawansowane filtrowanie typ aktywności, status poprawności poprawne/błędne
+Implementuje bezpieczną paginację w pamięci z zabezpieczeniem granic stron
+"""
+
 from sqlalchemy import literal, func, desc
 from sqlalchemy.orm import joinedload
 from app import db

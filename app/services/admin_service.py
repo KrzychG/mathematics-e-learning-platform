@@ -1,3 +1,11 @@
+"""
+Serwis Panelu Administracyjnego.
+Obsługuje zaawansowane filtrowanie i stronicowanie listy użytkowników (/admin/users).
+Wyznacza ostatnią aktywność jednym zoptymalizowanym zapytaniem SQL.
+Zbiera metryki systemowe liczba kont, zadań, aktywnych tematów, wskaźniki zdawalności.
+Przygotowuje pełny kontekst analityczny profilu wybranego ucznia (/admin/users/<id>).
+"""
+
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
