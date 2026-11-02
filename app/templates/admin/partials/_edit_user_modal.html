@@ -1,0 +1,23 @@
+{% from "admin/partials/_user_modal_fields.html" import render_user_identity_fields, render_user_password_generator_field %}
+{% from "components/_modal.html" import render_modal %}
+{% call render_modal(
+    'editUserModal',
+    'Edytuj dane użytkownika',
+    icon_class='bi-pencil-square text-primary',
+    extra_modal_attrs={
+        'data-reopen': '1' if edit_form_data else '0',
+        'data-has-avatar': '1' if edit_form_data and edit_form_data.has_avatar else '0'
+    },
+    form_id='editUserForm',
+    form_action=url_for('admin.edit_user', user_id=edit_form_data.user_id) if edit_form_data else '',
+    submit_label='Zapisz zmiany'
+) %}
+    {{ render_user_identity_fields( edit_form, first_name_id='editUserFirstName', email_id='editUserEmail' ) }}
+    {{ render_user_password_generator_field( edit_form.new_password, label_text='Ustaw nowe hasło (opcjonalnie)', gen_btn_id='generateEditPasswordBtn', input_id='editUserPasswordField', placeholder='Zostaw puste, aby nie zmieniać obecnego hasła', help_text='Min. ' ~ PASSWORD_MIN_LENGTH ~ ' znaków (litery i cyfry).' ) }}
+    <div class="form-check {% if not (edit_form_data and edit_form_data.has_avatar) %}d-none{% endif %}" id="editUserAvatarGroup">
+        {{ edit_form.remove_avatar(class_='form-check-input', id='editUserRemoveAvatar') }}
+        <label class="form-check-label small text-danger" for="editUserRemoveAvatar">
+            <i class="bi bi-image-alt me-1"></i>Usuń obecny awatar użytkownika (przywróć inicjały)
+        </label>
+    </div>
+{% endcall %}
