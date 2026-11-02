@@ -1,0 +1,85 @@
+{% macro _confirm_action_form(
+    action_url,
+    confirm_title,
+    confirm_message,
+    confirm_label,
+    confirm_variant,
+    confirm_icon,
+    btn_class,
+    icon_class,
+    btn_label='',
+    btn_title='',
+    disabled=false,
+    confirm_note='',
+    confirm_warning='',
+    compact=true
+) -%}
+    <form action="{{ action_url }}" method="POST" class="m-0" data-confirm-title="{{ confirm_title }}" data-confirm-message="{{ confirm_message }}" {% if confirm_note %}data-confirm-note="{{ confirm_note }}"{% endif %} {% if confirm_warning %}data-confirm-warning="{{ confirm_warning }}"{% endif %} data-confirm-label="{{ confirm_label }}" data-confirm-variant="{{ confirm_variant }}" data-confirm-icon="{{ confirm_icon }}">
+        {% include '_csrf.html' %}
+        <button type="submit" class="btn btn-sm {{ btn_class }}{% if not compact %} shadow-sm{% endif %}" {% if btn_title %}title="{{ btn_title }}"{% endif %} {% if disabled %}disabled{% endif %}>
+            <i class="bi {{ icon_class }}{% if not compact and btn_label %} me-1{% endif %}"></i>{% if not compact and btn_label %} {{ btn_label }}{% endif %}
+        </button>
+    </form>
+{%- endmacro %}
+{% macro render_user_actions(u, current_user_id, active_admins=2, compact=true) -%}
+    {% set is_self = (u.id == current_user_id) %}
+    {% set is_target_admin = u.is_admin %}
+    {% set is_protected_admin = u.is_admin and u.is_active and active_admins <= 1 %}
+    {% if compact %}
+    <a href="{{ url_for('admin.user_details', user_id=u.id) }}" class="btn btn-sm btn-outline-secondary" title="Karta szczegółów i statystyk użytkownika">
+        <i class="bi bi-person-lines-fill"></i>
+    </a>
+    {% endif %}
+    <button type="button" class="btn btn-sm btn-outline-primary{% if not compact %} shadow-sm{% endif %} btn-edit-user" data-bs-toggle="modal" data-bs-target="#editUserModal" data-edit-url="{{ url_for('admin.edit_user', user_id=u.id) }}" data-first-name="{{ u.first_name or '' }}" data-email="{{ u.email }}" data-has-avatar="{{ '1' if u.avatar_filename else '0' }}" title="Edytuj imię, e-mail, hasło lub awatar">
+        <i class="bi bi-pencil-square{% if not compact %} me-1{% endif %}"></i>{% if not compact %} Edytuj dane{% endif %}
+    </button>
+    {% if not compact and u.avatar_filename %}
+    {{ _confirm_action_form( url_for('admin.delete_user_avatar_admin', user_id=u.id), 'Usunięcie awatara', 'Czy na pewno chcesz usunąć zdjęcie profilowe użytkownika ' ~ u.email ~ '?', 'Usuń awatar', 'danger', 'bi-image-alt', 'btn-outline-secondary', 'bi-image-alt', btn_label='Usuń awatar', btn_title='Usuń nieodpowiedni lub zbędny awatar', confirm_note='Zamiast zdjęcia wyświetlane będą domyślne inicjały użytkownika.', compact=compact ) }}
+    {% endif %}
+    {{ _confirm_action_form( url_for('admin.send_user_password_reset', user_id=u.id), 'Resetowanie hasła', 'Czy na pewno chcesz wygenerować i wysłać link do zresetowania hasła na adres ' ~ u.email ~ '?', 'Wyślij link', 'warning', 'bi-key-fill', 'btn-outline-warning', 'bi-key-fill', btn_label='Wyślij reset hasła', btn_title='Wyślij link do resetu hasła na e-mail użytkownika' if u.is_active else 'Odblokuj konto przed wysłaniem linku resetującego', disabled=(not u.is_active), compact=compact ) }}
+    {% if u.is_otp_enabled %}
+    {{ _confirm_action_form( url_for('admin.reset_user_2fa', user_id=u.id), 'Reset weryfikacji 2FA', 'Czy na pewno chcesz zresetować weryfikację dwuetapową (2FA) dla ' ~ u.email ~ '?', 'Zresetuj 2FA', 'info', 'bi-shield-x', 'btn-outline-info', 'bi-shield-x', btn_label='Zresetuj 2FA', btn_title='Zresetuj weryfikację dwuetapową (2FA) dla tego użytkownika' if compact else '', confirm_note='Użytkownik odzyska dostęp do konta logując się wyłącznie hasłem.', compact=compact ) }}
+    {% else %}
+    <button type="button" class="btn btn-sm btn-outline-secondary opacity-50" title="{{ 'Użytkownik nie ma włączonej weryfikacji dwuetapowej 2FA' if compact else 'Użytkownik nie ma włączonej weryfikacji dwuetapowej' }}" disabled>
+        <i class="bi bi-shield-x{% if not compact %} me-1{% endif %}"></i>{% if not compact %} 2FA nieaktywne{% endif %}
+    </button>
+    {% endif %}
+    {% if compact or not is_self %}
+        {% set toggle_admin_form = _confirm_action_form(
+            url_for('admin.toggle_admin', user_id=u.id),
+            'Odebranie uprawnień admina' if is_target_admin else 'Nadanie uprawnień admina',
+            'Czy na pewno chcesz ' ~ ('odebrać uprawnienia administratora' if is_target_admin else 'nadać uprawnienia administratora') ~ ' użytkownikowi ' ~ u.email ~ '?',
+            ('Odbierz uprawnienia' if compact else 'Odbierz admina') if is_target_admin else ('Nadaj uprawnienia' if compact else 'Nadaj admina'),
+            'primary',
+            'bi-shield-lock-fill',
+            ('btn-primary' if is_target_admin else 'btn-outline-primary') if compact else ('btn-outline-primary' if is_target_admin else 'btn-primary'),
+            'bi-shield-lock-fill',
+            btn_label='Odbierz admina' if is_target_admin else 'Nadaj admina',
+            btn_title='Nie możesz zmienić własnych uprawnień' if is_self else ('Nie można odebrać uprawnień ostatniemu aktywnemu administratorowi' if is_protected_admin else (('Odbierz uprawnienia admina' if is_target_admin else 'Nadaj uprawnienia admina') if compact else '')),
+            disabled=(is_self or is_protected_admin),
+            compact=compact
+        ) %}
+        {% set toggle_active_form = _confirm_action_form(
+            url_for('admin.toggle_active', user_id=u.id),
+            'Blokada konta' if u.is_active else 'Odblokowanie konta',
+            'Czy na pewno chcesz ' ~ ('zablokować' if u.is_active else 'odblokować') ~ ' konto użytkownika ' ~ u.email ~ '?',
+            'Zablokuj konto' if u.is_active else 'Odblokuj konto',
+            'danger' if u.is_active else 'success',
+            'bi-ban' if u.is_active else 'bi-check-circle-fill',
+            'btn-outline-danger' if u.is_active else 'btn-success',
+            'bi-ban' if u.is_active else 'bi-check-circle-fill',
+            btn_label='Zablokuj konto' if u.is_active else 'Odblokuj konto',
+            btn_title='Nie możesz zablokować własnego konta' if is_self else ('Nie można zablokować ostatniego aktywnego administratora' if (u.is_active and is_protected_admin) else (('Zablokuj konto' if u.is_active else 'Odblokuj konto') if compact else '')),
+            disabled=(is_self or (u.is_active and is_protected_admin)),
+            compact=compact
+        ) %}
+        {% if compact %}
+            {{ toggle_admin_form }}
+            {{ toggle_active_form }}
+        {% else %}
+            {{ toggle_active_form }}
+            {{ toggle_admin_form }}
+        {% endif %}
+        {{ _confirm_action_form( url_for('admin.delete_user', user_id=u.id), 'Trwałe usunięcie konta', 'Czy na pewno chcesz usunąć konto użytkownika ' ~ u.email ~ '?', 'Usuń konto', 'danger', 'bi-trash3-fill', 'btn-outline-danger', 'bi-trash3-fill', btn_label='Usuń konto', btn_title='Nie możesz usunąć własnego konta' if is_self else ('Nie można usunąć ostatniego aktywnego administratora' if is_protected_admin else ('Trwale usuń konto użytkownika' if compact else '')), disabled=(is_self or is_protected_admin), confirm_warning='Tej operacji nie można cofnąć. Konto wraz ze wszystkimi wynikami, postępami i odznakami zostanie trwale usunięte.', compact=compact ) }}
+    {% endif %}
+{%- endmacro %}
