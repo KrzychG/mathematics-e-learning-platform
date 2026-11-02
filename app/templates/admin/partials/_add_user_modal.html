@@ -1,0 +1,30 @@
+{% from "admin/partials/_user_modal_fields.html" import render_user_identity_fields, render_user_password_generator_field %}
+{% from "components/_modal.html" import render_modal %}
+{% call render_modal(
+    'addUserModal',
+    'Dodaj nowego użytkownika',
+    icon_class='bi-person-plus-fill text-primary',
+    extra_modal_attrs={'data-reopen': '1' if create_form_data else '0'},
+    form_action=url_for('admin.create_user'),
+    submit_label='Utwórz użytkownika'
+) %}
+    {{ render_user_identity_fields( create_form, first_name_id='addUserFirstName', email_id='addUserEmail', render_role=true ) }}
+    {{ render_user_password_generator_field( create_form.password, label_text='Hasło początkowe', gen_btn_id='generatePasswordBtn', input_id='userPasswordField', placeholder='Zostaw puste, aby wygenerować automatycznie', help_text='Min. ' ~ PASSWORD_MIN_LENGTH ~ ' znaków (litery i cyfry). W przypadku pozostawienia pustego pola system utworzy silne hasło losowe.' ) }}
+    <div class="mb-3">
+        <div class="form-check">
+            {{ create_form.send_welcome_email(class_='form-check-input', id='sendWelcomeEmailCheck') }}
+            <label class="form-check-label small" for="sendWelcomeEmailCheck">
+                Wyślij wiadomość e-mail z linkiem do ustalenia własnego hasła
+            </label>
+        </div>
+        <small class="text-muted d-none ms-4" id="welcomeEmailBlockedHint" style="font-size: 0.75rem;">
+            Wysyłka linku resetu hasła jest dostępna wyłącznie dla kont aktywnych.
+        </small>
+    </div>
+    <div class="form-check">
+        {{ create_form.is_active(class_='form-check-input', id='isActiveCheck') }}
+        <label class="form-check-label small" for="isActiveCheck">
+            Konto aktywne (odznaczenie spowoduje natychmiastową blokadę konta)
+        </label>
+    </div>
+{% endcall %}
