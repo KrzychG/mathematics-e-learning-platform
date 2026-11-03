@@ -1,0 +1,37 @@
+{% from "components/_form_field.html" import render_wtform_field %}
+{% macro render_user_identity_fields(
+    form,
+    first_name_id=none,
+    email_id=none,
+    render_role=false
+) -%}
+    {{ render_wtform_field( form.first_name, label_text='Imię użytkownika / ucznia', label_class='form-label fw-semibold small', wrapper_class='mb-3', field_class='form-control', field_id=first_name_id, placeholder='np. Jan', required=true, required_star=true, minlength=2, maxlength=50 ) }}
+    {{ render_wtform_field( form.email, label_text='Adres e-mail', label_class='form-label fw-semibold small', wrapper_class='mb-3', field_class='form-control', field_id=email_id, field_type='email', placeholder='np. jan.kowalski@szkola.pl', required=true, required_star=true, maxlength=120 ) }}
+    {% if render_role %}
+    <div class="mb-3">
+        <label for="{{ form.role.id }}" class="form-label fw-semibold small">Rola w systemie <span class="text-danger">*</span></label>
+        {{ form.role(class_='form-select') }}
+    </div>
+    {% endif %}
+{%- endmacro %}
+{% macro render_user_password_generator_field(
+    field,
+    label_text,
+    gen_btn_id,
+    input_id,
+    placeholder,
+    help_text
+) -%}
+    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <label for="{{ input_id }}" class="form-label fw-semibold small mb-0">{{ label_text }}</label>
+            <button type="button" class="btn btn-link btn-sm text-decoration-none p-0" id="{{ gen_btn_id }}" style="font-size: 0.8rem;">
+                <i class="bi bi-magic me-1"></i>Generuj hasło
+            </button>
+        </div>
+        {{ field(type='text', id=input_id, class_='form-control', placeholder=placeholder, maxlength=128) }}
+        <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+            {{ help_text }}
+        </small>
+    </div>
+{%- endmacro %}
