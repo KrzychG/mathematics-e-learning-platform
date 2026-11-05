@@ -1,0 +1,45 @@
+{% from "components/_pagination.html" import render_pagination %}
+{% macro render_user_detail_tab(
+    tab_id,
+    active_tab,
+    has_items,
+    pagination,
+    page_param,
+    total_label,
+    aria_label,
+    user_id,
+    attempts_pagination,
+    exams_pagination,
+    topics_pagination,
+    badges_pagination,
+    empty_icon,
+    empty_title,
+    empty_message,
+    padding_class='p-3'
+) -%}
+<div class="tab-pane fade {{ padding_class }} {% if active_tab == tab_id %}show active{% endif %}" id="{{ tab_id }}-tab-pane" role="tabpanel">
+    {% if has_items %}
+        {{ caller() }}
+        {% if pagination and pagination.pages > 1 %}
+            <div class="mt-3">
+                {% set extra_params = {
+                    'user_id': user_id,
+                    'tab': tab_id,
+                    'tasks_page': attempts_pagination.page if attempts_pagination else 1,
+                    'exams_page': exams_pagination.page if exams_pagination else 1,
+                    'topics_page': topics_pagination.page if topics_pagination else 1,
+                    'badges_page': badges_pagination.page if badges_pagination else 1
+                } %}
+                {% set _ = extra_params.pop(page_param, none) %}
+                {{ render_pagination( pagination, 'admin.user_details', page_param=page_param, total_label=total_label, extra_params=extra_params, aria_label=aria_label ) }}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="bi {{ empty_icon }} fs-1 d-block mb-2 text-secondary opacity-50"></i>
+            <h6 class="fw-semibold">{{ empty_title }}</h6>
+            <p class="small mb-0">{{ empty_message }}</p>
+        </div>
+    {% endif %}
+</div>
+{%- endmacro %}

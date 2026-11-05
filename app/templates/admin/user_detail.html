@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% from "components/_pagination.html" import render_pagination %}
+{% from "components/_ai_hint_modal.html" import render_ai_hint_modal %}
+{% from "components/_time.html" import render_local_time %}
+{% from "components/_kpi_card.html" import render_kpi_card %}
+{% block content %}
+<div class="h-100 w-100 overflow-y-auto" data-math-typeset="true">
+    <div class="container-fluid px-4 py-3 pb-5">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}" class="text-decoration-none">Panel Administratora</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}" class="text-decoration-none">Użytkownicy</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ u.display_name }}</li>
+                </ol>
+            </nav>
+            <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i> Powrót do listy użytkowników
+            </a>
+        </div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="row align-items-center g-3">
+                    {% from 'components/_avatar.html' import render_avatar %}
+                    <div class="col-md-auto text-center text-md-start">
+                        {{ render_avatar(u, size=72, img_classes='border shadow-sm', fallback_classes='bg-primary bg-opacity-10 text-primary d-inline-flex shadow-sm', font_size='1.8rem', bold=false, extra_style='font-weight: 700;') }}
+                    </div>
+                    <div class="col-md">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                            <h3 class="mb-0 fw-bold">{{ u.first_name or u.display_name }}</h3>
+                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">ID: #{{ u.id }}</span>
+                            {% if u.is_admin %}
+                                <span class="badge bg-danger">Administrator</span>
+                            {% else %}
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Uczeń</span>
+                            {% endif %}
+                            {% if u.is_active %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">Konto aktywne</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Konto zablokowane</span>
+                            {% endif %}
+                            {% if u.is_otp_enabled %}
+                                <span class="badge bg-info-subtle text-info border border-info-subtle" title="Weryfikacja dwuetapowa włączona">
+                                    <i class="bi bi-shield-check me-1"></i>2FA aktywne
+                                </span>
+                            {% else %}
+                                <span class="badge bg-light text-muted border">
+                                    <i class="bi bi-shield-slash me-1"></i>2FA wyłączone
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="text-muted d-flex flex-wrap gap-3 small mt-2">
+                            <span><i class="bi bi-envelope me-1 text-primary"></i>{{ u.email }}</span>
+                            <span><i class="bi bi-calendar3 me-1 text-primary"></i>Rejestracja: {{ render_local_time(u.created_at, tag='strong') }}</span>
+                            <span><i class="bi bi-clock-history me-1 text-primary"></i>Ostatnia aktywność: {{ render_local_time(last_activity, tag='strong') }}</span>
+                        </div>
+                    </div>
+                    {% from 'admin/partials/_user_actions.html' import render_user_actions with context %}
+                    <div class="col-md-auto text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end">
+                        {{ render_user_actions(u, current_user.id, active_admins=active_admins | default(2), compact=false) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mb-4">
+            {% call render_kpi_card(label='Rozwiązane zadania', value=total_attempts, color='primary', icon='bi-check2-square') %}
+                <div class="mt-2 small d-flex justify-content-between text-muted">
+                    <span>Poprawne: <strong class="text-success">{{ correct_attempts }}</strong></span>
+                    <span>Skuteczność: <strong class="text-primary">{{ task_accuracy }}%</strong></span>
+                </div>
+            {% endcall %}
+            {% call render_kpi_card(label='Próbne Egzaminy', value=completed_exams_count, color='success', icon='bi-mortarboard-fill') %}
+                <div class="mt-2 small d-flex justify-content-between text-muted">
+                    <span>Zdane: <strong class="text-success">{{ passed_exams_count }}</strong></span>
+                    <span>Średni wynik: <strong class="text-success">{{ avg_exam_score }}%</strong></span>
+                </div>
+            {% endcall %}
+            {% call render_kpi_card(label='Wyjaśnienia błędów AI', value=hints_used, color='warning', icon='bi-lightbulb-fill') %}
+                <div class="mt-2 small text-muted">
+                    <span>W zadaniach: <strong>{% if total_attempts > 0 %}{{ (hints_used / total_attempts * 100)|round|int }}%{% else %}0%{% endif %}</strong></span>
+                </div>
+            {% endcall %}
+            {% call render_kpi_card(label='Zdobyte Odznaki', value=total_achievements_count | default(user_achievements|length), color='info', icon='bi-award-fill') %}
+                <div class="mt-2 small d-flex justify-content-between text-muted">
+                    <span>Rozpoczęte tematy: <strong>{{ total_topics_started | default(topic_progress_list|length) }}</strong></span>
+                    <span class="text-info fw-semibold">Grywalizacja</span>
+                </div>
+            {% endcall %}
+        </div>
+        {% set active_tab = active_detail_tab | default('tasks') %}
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white border-bottom p-3">
+                <ul class="nav nav-pills gap-2" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold {% if active_tab == 'tasks' %}active{% endif %}" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks-tab-pane" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'tasks' else 'false' }}">
+                            <i class="bi bi-list-check me-1"></i> Ostatnie zadania ({{ total_attempts }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold {% if active_tab == 'exams' %}active{% endif %}" id="exams-tab" data-bs-toggle="tab" data-bs-target="#exams-tab-pane" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'exams' else 'false' }}">
+                            <i class="bi bi-file-earmark-text me-1"></i> Egzaminy próbne ({{ total_exams }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold {% if active_tab == 'syllabus' %}active{% endif %}" id="syllabus-tab" data-bs-toggle="tab" data-bs-target="#syllabus-tab-pane" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'syllabus' else 'false' }}">
+                            <i class="bi bi-bar-chart-steps me-1"></i> Postępy w tematach ({{ total_topics_started | default(topic_progress_list|length) }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold {% if active_tab == 'badges' %}active{% endif %}" id="badges-tab" data-bs-toggle="tab" data-bs-target="#badges-tab-pane" type="button" role="tab" aria-selected="{{ 'true' if active_tab == 'badges' else 'false' }}">
+                            <i class="bi bi-trophy me-1"></i> Osiągnięcia ({{ total_achievements_count | default(user_achievements|length) }})
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-0">
+                <div class="tab-content">
+                    {% include "admin/partials/user_detail/_tab_tasks.html" %}
+                    {% include "admin/partials/user_detail/_tab_exams.html" %}
+                    {% include "admin/partials/user_detail/_tab_syllabus.html" %}
+                    {% include "admin/partials/user_detail/_tab_badges.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ render_ai_hint_modal(title='Podpowiedź AI do zadania', answer_label='Odpowiedź ucznia') }}
+{% include "admin/partials/_edit_user_modal.html" %}
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/admin/dashboard.js') }}"></script>{% endblock %}

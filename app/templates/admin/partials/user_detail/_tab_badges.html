@@ -1,0 +1,42 @@
+{% from "admin/partials/user_detail/_tab_macros.html" import render_user_detail_tab %}
+{% from "components/_time.html" import render_local_time %}
+{% call render_user_detail_tab(
+    'badges',
+    active_tab,
+    user_achievements,
+    badges_pagination,
+    'badges_page',
+    'Łącznie odznak',
+    'Paginacja osiągnięć',
+    u.id,
+    attempts_pagination,
+    exams_pagination,
+    topics_pagination,
+    badges_pagination,
+    'bi-trophy',
+    'Brak zdobytych odznak',
+    'Uczeń nie odblokował jeszcze żadnych osiągnięć.',
+    padding_class='p-4'
+) %}
+        <div class="row g-3">
+            {% for ua in user_achievements %}
+            <div class="col-md-4 col-sm-6">
+                <div class="card h-100 border rounded-3 p-3 bg-light bg-opacity-25 shadow-none">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle d-flex justify-content-center align-items-center" style="width: 52px; height: 52px;">
+                            <i class="{{ ua.achievement.icon_class or 'bi bi-award-fill' }} fs-3"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-1">{{ ua.achievement.name }}</h6>
+                            <p class="text-muted small mb-2">{{ ua.achievement.description or 'Brak opisu osiągnięcia.' }}</p>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-clock me-1"></i>
+                                Odblokowano: {{ render_local_time(ua.unlocked_at) }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+{% endcall %}
