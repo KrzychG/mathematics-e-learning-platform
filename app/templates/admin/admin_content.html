@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% from "components/_pagination.html" import render_pagination %}
+{% from "components/_kpi_card.html" import render_kpi_card %}
+{% from "admin/partials/content/_topic_macros.html" import render_topics_table %}
+{% block content %}
+<div class="h-100 w-100 overflow-y-auto">
+    <div class="container-fluid px-4 py-3 pb-5">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+            <h2 class="fw-bold mb-1">
+                Kategorie i Tematy
+            </h2>
+            <p class="text-muted mb-0">
+                Zarządzanie strukturą programu nauczania, oraz treścią teoretyczną.
+            </p>
+        </div>
+        <div class="col-md-5 text-md-end mt-3 mt-md-0 d-flex justify-content-md-end gap-2 flex-wrap">
+            <button type="button" class="btn btn-primary shadow-sm" id="btnAddTopicTop" data-bs-toggle="modal" data-bs-target="#modalNewTopic">
+                <i class="bi bi-plus-circle me-1"></i> Dodaj temat
+            </button>
+            <button type="button" class="btn btn-outline-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNewCategory">
+                <i class="bi bi-folder-plus me-1"></i> Nowa Kategoria
+            </button>
+            <a href="/dashboard" class="btn btn-outline-secondary shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i> Wróć
+            </a>
+        </div>
+    </div>
+    {% include "admin/admin_nav.html" %}
+    <div class="row g-3 mb-4">
+        {{ render_kpi_card( label='Kategorie', value=total_categories, color='primary', icon='bi-folder2-open', col_class='col-md-4 col-sm-6', value_color=true ) }}
+        {{ render_kpi_card( label='Wszystkie Tematy', value=total_topics, color='success', icon='bi-journal-text', col_class='col-md-4 col-sm-6', value_color=true ) }}
+        {{ render_kpi_card( label='Opracowana Teoria', value=topics_with_theory, value_suffix='/ ' ~ total_topics, color='info', icon='bi-book-half', col_class='col-md-4 col-sm-6', value_color=true ) }}
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% if not categories and not uncategorized_topics %}
+                <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+                    <div class="card-body">
+                        <i class="bi bi-folder-x fs-1 text-muted opacity-50 mb-3 d-block"></i>
+                        <h5 class="fw-bold text-secondary">Brak kategorii i tematów w bazie danych</h5>
+                        <p class="text-muted mb-4">Możesz uruchomić skrypt <code>seed.py</code> lub dodać pierwszą kategorię ręcznie.</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNewCategory">
+                            <i class="bi bi-plus-circle me-1"></i> Utwórz pierwszą kategorię
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-collection me-2 text-primary"></i>Rozdziały programu nauczania
+                </h5>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-none" id="btnExpandAllChapters">
+                        <i class="bi bi-arrows-expand me-1"></i> Rozwiń wszystkie
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-none" id="btnCollapseAllChapters">
+                        <i class="bi bi-arrows-collapse me-1"></i> Zwiń wszystkie
+                    </button>
+                </div>
+            </div>
+            <div class="chapters-container mb-4" id="chaptersContainer">
+            {% for cat in categories %}
+            <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden chapter-card">
+                <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom" id="heading-cat-{{ cat.id }}">
+                    <div class="d-flex align-items-center gap-3 flex-grow-1 cursor-pointer chapter-toggle-area" data-bs-toggle="collapse" data-bs-target="#collapse-cat-{{ cat.id }}" aria-expanded="false" aria-controls="collapse-cat-{{ cat.id }}" style="cursor: pointer; user-select: none;">
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fw-bold">
+                            #{{ cat.id }}
+                        </span>
+                        <h5 class="mb-0 fw-bold text-dark">{{ cat.name }}</h5>
+                        <span class="badge bg-secondary-subtle text-secondary border rounded-pill">
+                            {{ cat.topics|length }} {% if cat.topics|length == 1 %}temat{% elif cat.topics|length in [2,3,4] %}tematy{% else %}tematów{% endif %}
+                        </span>
+                        <i class="bi bi-chevron-down ms-auto me-3 text-muted fs-5 chapter-chevron" style="transition: transform 0.25s ease;"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 btn-add-topic-for-cat" data-cat-id="{{ cat.id }}" data-cat-name="{{ cat.name }}">
+                            <i class="bi bi-plus-lg me-1"></i> Dodaj temat
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 btn-edit-cat" data-cat-id="{{ cat.id }}" data-cat-name="{{ cat.name }}">
+                            <i class="bi bi-pencil me-1"></i> Zmień nazwę
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-cat rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" data-cat-id="{{ cat.id }}" data-cat-name="{{ cat.name }}" data-topics-count="{{ cat.topics|length }}" title="Usuń kategorię">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="collapse-cat-{{ cat.id }}" class="collapse chapter-collapse" aria-labelledby="heading-cat-{{ cat.id }}">
+                    <div class="card-body p-0">
+                        {% if cat.topics %}
+                        {{ render_topics_table(cat.topics) }}
+                        {% else %}
+                            <div class="p-4 text-center text-muted">
+                                <span class="fst-italic">Ta kategoria nie zawiera jeszcze żadnych tematów.</span>
+                                <button class="btn btn-link btn-sm text-decoration-none btn-add-topic-for-cat" data-cat-id="{{ cat.id }}" data-cat-name="{{ cat.name }}">
+                                    Kliknij tutaj, aby dodać pierwszy temat.
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+            {% if categories_pagination and categories_pagination.pages > 1 %}
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                {{ render_pagination( categories_pagination, 'admin.admin_content', page_param='page', total_label='Łącznie kategorii', aria_label='Paginacja kategorii CMS' ) }}
+            </div>
+            {% endif %}
+            {% include "admin/partials/content/_uncategorized.html" %}
+        </div>
+    </div>
+    </div>
+</div>
+{% include "admin/partials/content/_modals.html" %}
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/admin/content.js') }}"></script>{% endblock %}

@@ -1,0 +1,119 @@
+{% macro render_topic_row(topic, edit_label='Edytuj') %}
+<tr>
+    <td class="ps-4 py-3">
+        <div class="fw-bold text-dark mb-1">{{ topic.name }}</div>
+        {% if topic.description %}
+            <div class="text-muted small lh-sm">{{ topic.description }}</div>
+        {% else %}
+            <span class="text-muted small fst-italic">Brak krótkiego opisu</span>
+        {% endif %}
+    </td>
+    <td class="py-3">
+        {% if topic.has_theory %}
+            <span class="badge bg-success-subtle text-success border border-success-subtle me-1">
+                <i class="bi bi-check2-circle me-1"></i>Opracowana
+            </span>
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-info btn-preview-theory" data-topic-id="{{ topic.id }}" data-topic-name="{{ topic.name }}">
+                <i class="bi bi-eye"></i> Podgląd
+            </button>
+            <div id="theory-content-{{ topic.id }}" class="tex2jax_ignore" style="display: none;">{{ topic.theory | render_theory | safe }}</div>
+        {% else %}
+            <span class="badge bg-warning-subtle text-warning border border-warning-subtle">
+                <i class="bi bi-exclamation-triangle me-1"></i>Brak treści
+            </span>
+        {% endif %}
+    </td>
+    <td class="pe-4 py-3 text-end">
+        <div class="btn-group btn-group-sm">
+            <a href="{{ url_for('admin.edit_topic', topic_id=topic.id) }}" class="btn btn-outline-primary" title="Edytuj temat i teorię">
+                <i class="bi bi-pencil-square me-1"></i>{{ edit_label }}
+            </a>
+            <a href="{{ url_for('learning.learning_desk', topic_id=topic.id) }}" class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer" title="Otwórz w Laboratorium ucznia">
+                <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+            <button type="button" class="btn btn-outline-danger btn-delete-topic" data-topic-id="{{ topic.id }}" data-topic-name="{{ topic.name }}" title="Usuń temat">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+{% endmacro %}
+{% macro render_topics_table(topics, edit_label='Edytuj', actions_width='220px') -%}
+<div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-muted small text-uppercase">
+            <tr>
+                <th scope="col" class="ps-4 py-3">Nazwa tematu &amp; Opis</th>
+                <th scope="col" class="py-3" style="width: 170px;">Teoria</th>
+                <th scope="col" class="pe-4 py-3 text-end" style="width: {{ actions_width }};">Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for topic in topics %}
+            {{ render_topic_row(topic, edit_label=edit_label) }}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{%- endmacro %}
+{% macro render_topic_meta_fields(
+    categories,
+    max_topic_len,
+    max_desc_len,
+    name_id='name',
+    cat_id='category_id',
+    desc_id='description',
+    name_val='',
+    selected_cat_id=none,
+    desc_val='',
+    layout='grid',
+    label_class='form-label fw-bold',
+    name_placeholder='',
+    desc_placeholder='',
+    show_editor_hint=false
+) -%}
+{% if layout == 'grid' %}
+<div class="row g-3">
+    <div class="col-md-8">
+        <label for="{{ name_id }}" class="{{ label_class }}">Nazwa tematu <span class="text-danger">*</span></label>
+        <input type="text" class="form-control rounded-3 fw-semibold" id="{{ name_id }}" name="name" maxlength="{{ max_topic_len }}" value="{{ name_val }}"{% if name_placeholder %} placeholder="{{ name_placeholder }}"{% endif %} required>
+    </div>
+    <div class="col-md-4">
+        <label for="{{ cat_id }}" class="{{ label_class }}">Kategoria (Dział)</label>
+        <select class="form-select rounded-3" id="{{ cat_id }}" name="category_id">
+            <option value="">-- {{ UNCATEGORIZED_LABEL }} --</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if selected_cat_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-12">
+        <label for="{{ desc_id }}" class="{{ label_class }}">Krótki opis tematu (wyświetlany w spisie treści)</label>
+        <input type="text" class="form-control rounded-3" id="{{ desc_id }}" name="description" maxlength="{{ max_desc_len }}" value="{{ desc_val or '' }}"{% if desc_placeholder %} placeholder="{{ desc_placeholder }}"{% endif %}>
+    </div>
+</div>
+{% else %}
+<div class="mb-3">
+    <label for="{{ name_id }}" class="{{ label_class }}">Nazwa tematu <span class="text-danger">*</span></label>
+    <input type="text" class="form-control rounded-3" id="{{ name_id }}" name="name" maxlength="{{ max_topic_len }}" value="{{ name_val }}"{% if name_placeholder %} placeholder="{{ name_placeholder }}"{% endif %} required>
+</div>
+<div class="mb-3">
+    <label for="{{ cat_id }}" class="{{ label_class }}">Kategoria (Dział)</label>
+    <select class="form-select rounded-3" id="{{ cat_id }}" name="category_id">
+        <option value="">-- {{ UNCATEGORIZED_LABEL }} --</option>
+        {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if selected_cat_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="mb-2">
+    <label for="{{ desc_id }}" class="{{ label_class }}">Krótki opis tematu</label>
+    <input type="text" class="form-control rounded-3" id="{{ desc_id }}" name="description" maxlength="{{ max_desc_len }}" value="{{ desc_val or '' }}"{% if desc_placeholder %} placeholder="{{ desc_placeholder }}"{% endif %}>
+</div>
+{% if show_editor_hint %}
+<div class="form-text text-muted mb-0">
+    <i class="bi bi-pencil-square me-1 text-primary"></i>Po zatwierdzeniu zostaniesz automatycznie przeniesiony do edytora treści lekcji.
+</div>
+{% endif %}
+{% endif %}
+{%- endmacro %}

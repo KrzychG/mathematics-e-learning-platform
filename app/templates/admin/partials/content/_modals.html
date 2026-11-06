@@ -1,0 +1,128 @@
+{% from "components/_modal.html" import render_modal %}
+{% from "admin/partials/content/_topic_macros.html" import render_topic_meta_fields %}
+{% set cms_footer_close_class = 'btn btn-secondary rounded-pill px-4' %}
+{% set cms_footer_cancel_class = 'btn btn-light rounded-pill px-4' %}
+{% call render_modal(
+    'modalNewCategory',
+    'Nowa Kategoria Programu',
+    'bi-folder-plus text-primary',
+    label_id='modalNewCategoryLabel',
+    header_class='border-bottom py-3',
+    body_class='py-4',
+    footer_class='border-top py-3',
+    cancel_btn_class=cms_footer_cancel_class,
+    close_btn_class=cms_footer_close_class,
+    form_action=url_for('admin.new_category'),
+    submit_label='Utwórz kategorię',
+    submit_btn_class='btn btn-primary rounded-pill px-4',
+    submit_icon_class='bi-check-lg'
+) %}
+    <div class="mb-3">
+        <label for="newCatName" class="form-label fw-bold">Nazwa kategorii (działu) <span class="text-danger">*</span></label>
+        <input type="text" class="form-control rounded-3" id="newCatName" name="name" maxlength="{{ max_cat_len }}" placeholder="np. Ciągi liczbowe" required>
+    </div>
+{% endcall %}
+{% call render_modal(
+    'modalEditCategory',
+    'Edytuj Nazwę Kategorii',
+    'bi-pencil-square text-primary',
+    header_class='border-bottom py-3',
+    body_class='py-4',
+    footer_class='border-top py-3',
+    cancel_btn_class=cms_footer_cancel_class,
+    close_btn_class=cms_footer_close_class,
+    form_id='formEditCategory',
+    submit_label='Zapisz zmiany',
+    submit_btn_class='btn btn-primary rounded-pill px-4',
+    submit_icon_class='bi-save'
+) %}
+    <div class="mb-3">
+        <label for="editCatName" class="form-label fw-bold">Nazwa kategorii <span class="text-danger">*</span></label>
+        <input type="text" class="form-control rounded-3" id="editCatName" name="name" maxlength="{{ max_cat_len }}" required>
+    </div>
+{% endcall %}
+{% call render_modal(
+    'modalDeleteCategory',
+    'Usuń Kategorię',
+    'bi-exclamation-triangle-fill',
+    title_class='text-danger',
+    header_class='border-bottom py-3',
+    body_class='py-4',
+    footer_class='border-top py-3',
+    cancel_btn_class=cms_footer_cancel_class,
+    close_btn_class=cms_footer_close_class,
+    form_id='formDeleteCategory',
+    submit_label='Potwierdź usunięcie',
+    submit_btn_class='btn btn-danger rounded-pill px-4',
+    submit_icon_class='bi-trash'
+) %}
+    <p class="mb-3">Czy na pewno chcesz usunąć kategorię <strong id="deleteCatName" class="text-dark"></strong>?</p>
+    <div id="deleteCatTopicsWarning" class="alert alert-warning p-3 rounded-3" style="display: none;">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        Kategoria zawiera obecnie <strong id="deleteCatTopicsCount"></strong> przypisanych tematów.
+        <div class="mt-3">
+            <label class="form-label fw-bold mb-1">Co zrobić z przypisanymi tematami?</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="topic_action" id="actionDetach" value="detach" checked>
+                <label class="form-check-label" for="actionDetach">
+                    Zachowaj tematy (przenieś do "{{ UNCATEGORIZED_LABEL }}")
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="topic_action" id="actionDeleteAll" value="delete_all">
+                <label class="form-check-label text-danger" for="actionDeleteAll">
+                    Usuń trwale kategorię wraz ze wszystkimi jej tematami i zadaniami
+                </label>
+            </div>
+        </div>
+    </div>
+{% endcall %}
+{% call render_modal(
+    'modalNewTopic',
+    'Dodaj Nowy Temat Nauczania',
+    'bi-journal-plus text-primary',
+    label_id='modalNewTopicLabel',
+    header_class='border-bottom py-3',
+    body_class='py-4',
+    footer_class='border-top py-3',
+    cancel_btn_class=cms_footer_cancel_class,
+    close_btn_class=cms_footer_close_class,
+    form_id='formNewTopic',
+    form_action=url_for('admin.new_topic'),
+    submit_label='Zatwierdź i przejdź do edytora',
+    submit_btn_class='btn btn-primary rounded-pill px-4',
+    submit_icon_class='bi-arrow-right-circle'
+) %}
+    {{ render_topic_meta_fields( all_categories | default(categories), max_topic_len, max_desc_len, name_id='topicName', cat_id='topicCategory', desc_id='topicDesc', layout='stack', label_class='form-label fw-bold', name_placeholder='np. 1. Ciąg arytmetyczny i geometryczny', desc_placeholder='np. Wzory na n-ty wyraz i sumę wyrazów ciągu.', show_editor_hint=true ) }}
+{% endcall %}
+{% call render_modal(
+    'modalPreviewTheory',
+    'Podgląd Teorii',
+    'bi-book-half text-primary',
+    title_id='previewTheoryTitle',
+    dialog_class='modal-lg modal-dialog-centered modal-dialog-scrollable',
+    header_class='border-bottom py-3',
+    has_form=false,
+    body_class='py-4 px-4 theory-content',
+    body_id='previewTheoryBody',
+    body_style='min-height: 200px;',
+    footer_class='border-top py-3',
+    close_btn_class=cms_footer_close_class
+) %}{% endcall %}
+{% call render_modal(
+    'modalDeleteTopic',
+    'Usuń Temat',
+    'bi-trash-fill',
+    title_class='text-danger',
+    header_class='border-bottom py-3',
+    body_class='py-4',
+    footer_class='border-top py-3',
+    cancel_btn_class=cms_footer_cancel_class,
+    close_btn_class=cms_footer_close_class,
+    form_id='formDeleteTopic',
+    submit_label='Usuń temat',
+    submit_btn_class='btn btn-danger rounded-pill px-4',
+    submit_icon_class='bi-trash'
+) %}
+    <p class="mb-0">Czy na pewno chcesz bezpowrotnie usunąć temat <strong id="deleteTopicName" class="text-dark"></strong> wraz z powiązanymi z nim zadaniami?</p>
+{% endcall %}
