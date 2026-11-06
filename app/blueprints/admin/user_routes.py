@@ -4,7 +4,7 @@ from flask import flash, redirect, render_template, request, session, url_for
 from flask_login import current_user
 
 from app import db
-from app.blueprints.admin.routes import _redirect_to_admin_list, admin_bp, admin_required
+from app.blueprints.admin.routes import redirect_to_admin_list, admin_bp, admin_required
 from app.blueprints.auth.routes import dispatch_password_reset
 from app.forms.auth_forms import AdminCreateUserForm, AdminEditUserForm, flash_form_errors
 from app.models import User
@@ -52,7 +52,7 @@ def _fail_user_form(state_saver, message: str | None = None):
     if message:
         flash(message, 'danger')
     state_saver()
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 
 
 def _store_user_form_state(session_key: str, **extra) -> None:
@@ -156,14 +156,14 @@ def toggle_admin(user_id):
         condition_attr='is_admin',
     )
     if not user:
-        return _redirect_to_admin_list()
+        return redirect_to_admin_list()
     user.is_admin = not user.is_admin
     action = 'Nadano' if user.is_admin else 'Odebrano'
     safe_db_commit(
         success_msg=f'{action} uprawnienia administratora użytkownikowi {user.email}.',
         error_msg='Wystąpił błąd podczas zmiany uprawnień administratora.',
     )
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>/toggle_active', methods=['POST'])
 @admin_required
 def toggle_active(user_id):
@@ -174,14 +174,14 @@ def toggle_active(user_id):
         condition_attr='is_active',
     )
     if not user:
-        return _redirect_to_admin_list()
+        return redirect_to_admin_list()
     user.is_active = not user.is_active
     status = 'odblokowane' if user.is_active else 'zablokowane'
     safe_db_commit(
         success_msg=f'Konto {user.email} zostało {status}.',
         error_msg='Wystąpił błąd podczas zmiany statusu konta użytkownika.',
     )
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>/reset_2fa', methods=['POST'])
 @admin_required
 def reset_user_2fa(user_id):
@@ -191,13 +191,13 @@ def reset_user_2fa(user_id):
     user = db.get_or_404(User, user_id)
     if not user.is_otp_enabled:
         flash(f'Użytkownik {user.email} nie ma aktywnej weryfikacji dwuetapowej (2FA).', 'info')
-        return _redirect_to_admin_list()
+        return redirect_to_admin_list()
     user.disable_2fa()
     safe_db_commit(
         success_msg=f'Weryfikacja dwuetapowa (2FA) dla użytkownika {user.email} została pomyślnie zresetowana. Użytkownik może zalogować się hasłem.',
         error_msg='Wystąpił błąd podczas resetowania weryfikacji dwuetapowej.',
     )
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>/send_password_reset', methods=['POST'])
 @admin_required
 def send_user_password_reset(user_id):
@@ -206,13 +206,13 @@ def send_user_password_reset(user_id):
     user = db.get_or_404(User, user_id)
     if not user.is_active:
         flash(f'Konto użytkownika {user.email} jest zablokowane. Odblokuj je przed wysłaniem linku resetującego.', 'warning')
-        return _redirect_to_admin_list()
+        return redirect_to_admin_list()
     _, sent = dispatch_password_reset(user)
     if sent:
         flash(f'Wiadomość z linkiem do resetowania hasła została pomyślnie wysłana na adres {user.email}.', 'success')
     else:
         flash(f'Wystąpił błąd podczas wysyłania e-maila do {user.email}. Sprawdź konfigurację serwera pocztowego SMTP lub ustaw hasło ręcznie w edycji użytkownika.', 'danger')
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>')
 @admin_required
 def user_details(user_id):
@@ -275,7 +275,7 @@ def create_user():
     role_label = 'Administrator' if role_name == 'admin' else 'Uczeń'
     pwd_info = f' Wygenerowane hasło startowe: {password}.' if generated_pwd else ''
     flash(f'Pomyślnie utworzono użytkownika {email} ({role_label}).{pwd_info}{email_note}', 'success')
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>/edit', methods=['POST'])
 @admin_required
 def edit_user(user_id):
@@ -303,20 +303,20 @@ def edit_user(user_id):
         details.append('Usunięto awatar')
     suffix = f" ({', '.join(details)})." if details else ''
     flash(f'Zaktualizowano dane użytkownika {user.email}.{suffix}', 'success')
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>/delete_avatar', methods=['POST'])
 @admin_required
 def delete_user_avatar_admin(user_id):
     user = db.get_or_404(User, user_id)
     if not user.avatar_filename:
         flash(f'Użytkownik {user.email} nie posiada wgranego awatara.', 'info')
-        return _redirect_to_admin_list()
+        return redirect_to_admin_list()
     success, msg, cat = delete_user_avatar(user)
     if success:
         flash(f'Awatar użytkownika {user.email} został usunięty.', 'info')
     else:
         flash(msg, cat)
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()
 @admin_bp.route('/admin/user/<int:user_id>/delete', methods=['POST'])
 @admin_required
 def delete_user(user_id):
@@ -326,7 +326,7 @@ def delete_user(user_id):
         last_admin_msg='Nie można usunąć ostatniego aktywnego administratora w systemie.',
     )
     if not user:
-        return _redirect_to_admin_list()
+        return redirect_to_admin_list()
     email = user.email
     safe_delete_user_account(
         user,
@@ -335,4 +335,4 @@ def delete_user(user_id):
     )
     if request.referrer and f'/admin/user/{user_id}' in request.referrer:
         return redirect(url_for('admin.admin_dashboard'))
-    return _redirect_to_admin_list()
+    return redirect_to_admin_list()

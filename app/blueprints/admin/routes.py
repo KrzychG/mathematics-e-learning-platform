@@ -13,7 +13,10 @@ def admin_required(f):
             abort(403)
         return f(*args, **kwargs)
     return login_required(decorated_function)
-def _redirect_to_admin_list():
+__all__ = ['admin_bp', 'admin_required', 'redirect_to_admin_list']
+
+
+def redirect_to_admin_list():
     # Bezpieczny powrót do poprzedniej podstrony
     # Sprawdza referrer pod kątem open redirect – wraca do referrera tylko, gdy host się zgadza i ścieżka zaczyna się od /admin.
     ref = request.referrer
@@ -23,4 +26,4 @@ def _redirect_to_admin_list():
         if (not parsed.netloc or parsed.netloc == request.host) and parsed.path.startswith('/admin'):
             return redirect(ref)
     return redirect(url_for('admin.admin_dashboard'))
-from app.blueprints.admin import content_routes, user_routes  # noqa: E402, F401
+from app.blueprints.admin import content_routes, user_routes 
