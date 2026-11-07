@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/topic_editor.css') }}">
+{% endblock %}
+{% block content %}
+<div class="h-100 w-100 overflow-y-auto">
+    <div class="container-fluid px-4 py-3 pb-5">
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}" class="text-decoration-none">Panel Admina</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_content') }}" class="text-decoration-none">Kategorie i Tematy</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edycja: {{ topic.name }}</li>
+        </ol>
+    </nav>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-pencil-square text-primary me-2"></i>Edycja Tematu: {{ topic.name }}
+            </h2>
+            <p class="text-muted mb-0 small">
+                Edytuj treść lekcji tematu.
+            </p>
+        </div>
+        <div class="col-md-5 text-md-end mt-3 mt-md-0 d-flex justify-content-md-end align-items-center gap-2">
+            <a href="{{ url_for('admin.admin_content') }}" class="btn btn-outline-secondary shadow-sm rounded-pill px-3">
+                <i class="bi bi-arrow-left me-1"></i> Wróć
+            </a>
+        </div>
+    </div>
+    {% include "admin/admin_nav.html" %}
+    <form id="editTopicForm" action="{{ url_for('admin.edit_topic', topic_id=topic.id) }}" method="POST">
+        {% include "_csrf.html" %}
+        <div class="row justify-content-center g-4 mb-4">
+            <div class="col-12 col-lg-11 col-xl-10">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-header bg-white py-3 px-4 border-bottom">
+                        <h5 class="fw-bold mb-0 text-dark">
+                            <i class="bi bi-info-circle text-primary me-2"></i>Podstawowe informacje o temacie
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% from "admin/partials/content/_topic_macros.html" import render_topic_meta_fields %}
+                        {{ render_topic_meta_fields( categories, max_topic_len, max_desc_len, name_id='name', cat_id='category_id', desc_id='description', name_val=form_data.name if form_data is defined else topic.name, selected_cat_id=form_data.category_id if form_data is defined else topic.category_id, desc_val=(form_data.description if form_data is defined else topic.description) or '', layout='grid', label_class='form-label fw-bold small text-muted text-uppercase', desc_placeholder='Krótki opis edukacyjny zagadnienia' ) }}
+                    </div>
+                </div>
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="fw-bold mb-0 text-dark">Treść lekcji</h5>
+                            <span class="badge bg-warning bg-opacity-25 text-warning-emphasis border border-warning rounded-pill px-2.5 py-1 d-none" id="unsavedChangesBadge">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i>Niezapisane zmiany
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold shadow-none" id="btnOpenMathModal" title="Kreator wzorów LaTeX">
+                                <i class="bi bi-calculator me-1"></i>Kreator wzorów
+                            </button>
+                            <ul class="nav nav-pills nav-pills-sm" id="topicEditorTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active rounded-pill px-3 py-1 fw-semibold small" id="tabEditor" data-bs-toggle="pill" data-bs-target="#paneEditor" type="button" role="tab" aria-selected="true">
+                                        <i class="bi bi-pencil me-1"></i>Edytor
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill px-3 py-1 fw-semibold small" id="tabPreview" data-bs-toggle="pill" data-bs-target="#panePreview" type="button" role="tab" aria-selected="false">
+                                        <i class="bi bi-eye me-1"></i>Podgląd na żywo
+                                    </button>
+                                </li>
+                            </ul>
+                            <span class="text-muted small border-start ps-3 d-none d-md-inline" id="editorStats">0 znaków | 0 słów</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0" id="editorBodyWrapper">
+                        <div class="tab-content" id="topicEditorTabContent">
+                            <div class="tab-pane fade show active p-0" id="paneEditor" role="tabpanel" aria-labelledby="tabEditor">
+                                <textarea class="form-control border-0 rounded-0 p-4 markdown-editor-textarea" id="theory" name="theory" style="min-height: 580px; max-height: 900px; outline: none; box-shadow: none; resize: vertical;">{{ (form_data.theory if form_data is defined else topic.theory) or '' }}</textarea>
+                            </div>
+                            <div class="tab-pane fade p-4 p-md-5 bg-white overflow-y-auto" id="panePreview" role="tabpanel" aria-labelledby="tabPreview" style="min-height: 580px; max-height: 850px;">
+                                <div class="theory-content fs-5 lh-lg" id="previewContent">
+                                    <div class="text-center py-5 text-muted">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>Generowanie podglądu...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white border-top border-4 border-primary">
+                    <div class="card-body p-3 p-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-3 d-none d-sm-block">
+                                <i class="bi bi-floppy fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Zapisz zmiany w temacie</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{{ url_for('admin.admin_content') }}" class="btn btn-outline-secondary rounded-pill px-3 py-2">
+                                <i class="bi bi-arrow-left me-1"></i> Wróć do listy tematów
+                            </a>
+                            <a href="{{ url_for('learning.learning_desk', topic_id=topic.id) }}" class="btn btn-outline-info rounded-pill px-3 py-2" target="_blank" title="Otwórz podgląd dla ucznia w Laboratorium">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Zobacz w Laboratorium
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm hover-lift">
+                                <i class="bi bi-check2-circle me-1"></i> Zapisz zmiany
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+<div class="modal fade" id="mathFormulaModal" tabindex="-1" aria-labelledby="mathFormulaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom pb-3">
+                <h5 class="modal-title fw-bold" id="mathFormulaModalLabel">
+                    <i class="bi bi-calculator text-primary me-2"></i>Kreator Wzorów Matematycznych (LaTeX)
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">
+                    Wybierz symbol z palety lub wpisz formułę w składni LaTeX. Poniżej zobaczysz podgląd wyrenderowanego wzoru.
+                </p>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted text-uppercase mb-1">Paleta symboli:</label>
+                    {% set math_palette_symbols = [
+                        ('\\frac{a}{b}', '$\\frac{a}{b}$'),
+                        ('\\sqrt{x}', '$\\sqrt{x}$'),
+                        ('x^{2}', '$x^2$'),
+                        ('a_{n}', '$a_n$'),
+                        ('\\cdot', '$\\cdot$'),
+                        ('\\pm', '$\\pm$'),
+                        ('\\Delta', '$\\Delta$'),
+                        ('\\mathbb{R}', '$\\mathbb{R}$'),
+                        ('\\mathbb{N}', '$\\mathbb{N}$'),
+                        ('\\mathbb{Z}', '$\\mathbb{Z}$'),
+                        ('\\le', '$\\le$'),
+                        ('\\ge', '$\\ge$'),
+                        ('\\neq', '$\\neq$'),
+                        ('\\pi', '$\\pi$'),
+                        ('\\alpha', '$\\alpha$'),
+                        ('\\beta', '$\\beta$'),
+                        ('\\infty', '$\\infty$'),
+                        ('\\in', '$\\in$'),
+                        ('\\subset', '$\\subset$'),
+                        ('\\Rightarrow', '$\\Rightarrow$')
+                    ] %}
+                    <div class="d-flex flex-wrap gap-1 p-2 bg-light rounded-3 border">
+                        {% for latex_code, display_tex in math_palette_symbols %}
+                        <button type="button" class="btn btn-sm btn-white border math-symbol-btn" data-latex="{{ latex_code }}">{{ display_tex }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="mathFormulaInput" class="form-label fw-bold small text-muted text-uppercase">Formuła LaTeX:</label>
+                    <input type="text" class="form-control font-monospace" id="mathFormulaInput" placeholder="np. f(x) = ax^2 + bx + c">
+                </div>
+                <div class="mb-3 d-flex gap-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="formulaTypeRadio" id="formulaTypeInline" value="inline" checked>
+                        <label class="form-check-label small" for="formulaTypeInline">
+                            Wzór w linii tekstu
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="formulaTypeRadio" id="formulaTypeBlock" value="block">
+                        <label class="form-check-label small" for="formulaTypeBlock">
+                            Wyśrodkowany blok wzoru
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Podgląd na żywo:</label>
+                    <div class="p-4 bg-light rounded-3 border text-center" style="min-height: 80px;">
+                        <div id="mathFormulaModalPreview" class="fs-4">
+                            <span class="text-muted small">Wpisz wzór lub kliknij symbol powyżej...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top bg-light rounded-bottom-4">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Anuluj</button>
+                <button type="button" class="btn btn-primary btn-sm fw-semibold" id="btnInsertFormulaToEditor">
+                    <i class="bi bi-plus-circle me-1"></i>Wstaw wzór do treści
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/admin/unsaved_guard.js') }}"></script><script src="{{ url_for('static', filename='js/admin/math_modal.js') }}"></script><script src="{{ url_for('static', filename='js/admin/topic_editor.js') }}"></script>{% endblock %}

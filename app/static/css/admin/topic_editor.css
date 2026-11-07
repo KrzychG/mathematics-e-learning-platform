@@ -1,0 +1,11 @@
+.markdown-editor-textarea {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    tab-size: 4;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.markdown-editor-textarea:focus {
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.12) !important;
+}
