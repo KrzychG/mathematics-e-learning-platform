@@ -9,10 +9,10 @@ def test_forgot_password_views_and_requests(client, user_factory):
 
     user_factory(email='student_reset@example.com', first_name='Marek', password='OldPassword123')
     resp_exist = client.post('/forgot-password', data={'email': 'student_reset@example.com'}, follow_redirects=True).data.decode('utf-8')
-    assert 'Jeśli konto z tym adresem e-mail istnieje w bazie' in resp_exist and '/reset-password/' in resp_exist
+    assert 'Jeśli konto z tym adresem e-mail istnieje' in resp_exist and '/reset-password/' in resp_exist
 
     resp_ghost = client.post('/forgot-password', data={'email': 'ghost@example.com'}, follow_redirects=True).data.decode('utf-8')
-    assert 'Jeśli konto z tym adresem e-mail istnieje w bazie' in resp_ghost and '/reset-password/' not in resp_ghost
+    assert 'Jeśli konto z tym adresem e-mail istnieje' in resp_ghost and '/reset-password/' not in resp_ghost
 
 
 def test_reset_password_token_validation_and_successful_update(client, user_factory, post_login):
