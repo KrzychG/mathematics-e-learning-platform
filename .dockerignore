@@ -1,0 +1,37 @@
+# Wirtualne środowiska i cache Pythona
+venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git i konfiguracja IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Lokalne sekrety i dane runtime
+.env
+.env.*
+!.env.example
+instance/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Uploady użytkowników
+app/static/uploads/avatars/*
+!app/static/uploads/avatars/.gitkeep
+
+# Logi i pliki tymczasowe
+*.log
+logs/
+scratch/
