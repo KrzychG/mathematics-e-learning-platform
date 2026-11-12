@@ -65,6 +65,3 @@ logs/
 # Uploads
 app/static/uploads/avatars/*
 !app/static/uploads/avatars/.gitkeep
-
-# Tymczasowe
-scratch/
