@@ -123,17 +123,18 @@ def seed_demo_data(clean: bool = False):
         all_achievements = {a.trigger_condition: a for a in Achievement.query.all()}
         now = datetime.now(timezone.utc).replace(tzinfo=None)
 
-        # Czyścimy dotychczasowych użytkowników
-        for u in User.query.all():
-            db.session.delete(u)
-        db.session.commit()
-
-        # Reset autoincrement w SQLite dla czytelnych ID 1-5
-        try:
-            db.session.execute(db.text("DELETE FROM sqlite_sequence WHERE name IN ('users', 'attempts', 'exam_attempts')"))
+        if clean:
+            # Czyścimy dotychczasowych użytkowników w trybie clean
+            for u in User.query.all():
+                db.session.delete(u)
             db.session.commit()
-        except Exception:
-            pass
+
+            # Reset autoincrement w SQLite dla czytelnych ID 1-5
+            try:
+                db.session.execute(db.text("DELETE FROM sqlite_sequence WHERE name IN ('users', 'attempts', 'exam_attempts')"))
+                db.session.commit()
+            except Exception:
+                pass
 
         print("=== [3/5] Tworzenie kont demonstracyjnych ===")
         _get_or_create_demo_user(
@@ -326,4 +327,13 @@ def seed_demo_data(clean: bool = False):
 
 
 if __name__ == '__main__':
-    seed_demo_data()
+    import argparse
+    parser = argparse.ArgumentParser(description="Generator kont demonstracyjnych i danych testowych platformy Axioma.")
+    parser.add_argument(
+        '--clean-demo',
+        '--clean',
+        action='store_true',
+        help="Czyści i odtwarza konta demonstracyjne od zera."
+    )
+    args = parser.parse_args()
+    seed_demo_data(clean=args.clean_demo)

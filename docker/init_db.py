@@ -10,9 +10,10 @@ from flask_migrate import stamp, upgrade
 from sqlalchemy import inspect
 
 from app import db
-from app.models import Category, Topic
+from app.models import Category, Topic, User
 from app.services.user_service import get_avatar_upload_dir
 from seed import app, seed_all
+from seed_demo import seed_demo_data
 
 
 def init_database() -> None:
@@ -34,15 +35,26 @@ def init_database() -> None:
             db.create_all()
 
         auto_seed = os.environ.get('AUTO_SEED', 'auto').strip().lower()
+        seed_demo = os.environ.get('SEED_DEMO', 'true').strip().lower() in ('true', '1', 'yes')
+
         if auto_seed == 'always':
-            print('[docker-init] AUTO_SEED=always — synchronizuję sylabus i osiągnięcia...')
-            seed_all()
-        elif auto_seed in ('auto', 'true', '1', 'yes'):
-            if Category.query.count() == 0 and Topic.query.count() == 0:
+            print('[docker-init] AUTO_SEED=always — synchronizuję bazę danych...')
+            if seed_demo:
+                seed_demo_data(clean=False)
+            else:
+                seed_all()
+        elif auto_seed in ('auto', 'true', '1', 'yes', 'demo'):
+            needs_syllabus = Category.query.count() == 0 and Topic.query.count() == 0
+            needs_users = User.query.count() == 0
+
+            if seed_demo and (needs_users or auto_seed == 'demo'):
+                print('[docker-init] Przygotowanie środowiska demonstracyjnego — tworzenie kont (admin, uczeń z postępami) i zadań...')
+                seed_demo_data(clean=False)
+            elif needs_syllabus:
                 print('[docker-init] Baza jest pusta — uruchamiam seed sylabusa i osiągnięć...')
                 seed_all()
             else:
-                print('[docker-init] Baza zawiera już kategorie/tematy — pomijam automatyczny seed.')
+                print('[docker-init] Baza zawiera już dane i konta — pomijam automatyczny seed.')
         else:
             print('[docker-init] AUTO_SEED wyłączony — pomijam seed.')
 

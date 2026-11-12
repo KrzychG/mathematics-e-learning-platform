@@ -29,6 +29,7 @@ services:
       MAIL_DEFAULT_SENDER: ${MAIL_DEFAULT_SENDER:-}
       MAIL_SENDER_NAME: ${MAIL_SENDER_NAME:-Axioma - Platforma Edukacyjna}
       AUTO_SEED: ${AUTO_SEED:-auto}
+      SEED_DEMO: ${SEED_DEMO:-true}
     volumes:
       - axioma_instance:/app/instance
       - axioma_avatars:/app/app/static/uploads/avatars

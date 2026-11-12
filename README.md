@@ -230,7 +230,7 @@ Aplikacja jest dostępna w przeglądarce pod adresem: **`http://127.0.0.1:5000`*
 | `DATABASE_URL` | `sqlite:///app.db` | URI połączenia z bazą danych (wspiera SQLite, PostgreSQL, MySQL). |
 | `GEMINI_API_KEY` | *(opcjonalny)* | Klucz dostępowy do Google Gemini API (Google AI Studio). W przypadku braku lub wpisania wartości zastępczej, platforma automatycznie przełącza się w lokalny tryb symulacji offline. |
 | `GEMINI_MODEL` | `gemini-3.8-flash` | Identyfikator modelu Google Gemini wykorzystywanego do generowania zadań i wskazówek. |
-| `USE_PROXY_FIX` | `true` | Aktywacja middleware `werkzeug.middleware.proxy_fix` dla bezpiecznego odczytu nagłówków `X-Forwarded-*` (konfigurowalne przez `PROXY_FIX_X_FOR`, `PROXY_FIX_X_PROTO`, `PROXY_FIX_X_HOST`, `PROXY_FIX_X_PREFIX`, domyślnie `1`). |
+| `USE_PROXY_FIX` | `true` | Aktywacja middleware `werkzeug.middleware.proxy_fix` dla bezpiecznego odczytu nagłówków `X-Forwarded-*` (konfigurowalne przez `PROXY_FIX_X_FOR=1`, `PROXY_FIX_X_PROTO=1`, `PROXY_FIX_X_PREFIX=1` oraz `PROXY_FIX_X_HOST=0`). |
 | `SESSION_COOKIE_SECURE` | `false` / `true` | Wymuszenie flagi `Secure` dla ciasteczka sesji (w profilu `production` zawsze `true`, w `docker` sterowane zmienną środowiskową, domyślnie `false`). |
 | `FORCE_HSTS` | `false` | Wymuszenie polityki bezpieczeństwa HTTP Strict Transport Security (zalecane dla HTTPS na produkcji; w profilu `production` zawsze `true`). |
 | `PLATFORM_TIMEZONE` | `Europe/Warsaw` | Docelowa strefa czasowa IANA używana przy konwersji znaczników czasu UTC do czasu lokalnego w interfejsie. |
@@ -243,7 +243,8 @@ Aplikacja jest dostępna w przeglądarce pod adresem: **`http://127.0.0.1:5000`*
 | `MAIL_DEFAULT_SENDER` | `no-reply@axioma.pl` | Domyślny adres nadawcy wiadomości e-mail (jeśli brak, używa `MAIL_USERNAME` lub wartości domyślnej). |
 | `MAIL_SENDER_NAME` | `Axioma - Platforma Edukacyjna` | Wyświetlana nazwa nadawcy w nagłówku `From`. |
 | `MAIL_TIMEOUT` | `10` | Limit czasu połączenia SMTP (w sekundach). |
-| `AUTO_SEED` | `auto` | Tryb automatycznej inicjalizacji danych w kontenerze Docker (`auto` – tylko na pustej bazie, `always` – przy każdym starcie, `false` – wyłączony). |
+| `AUTO_SEED` | `auto` | Tryb automatycznej inicjalizacji danych w kontenerze Docker (`auto` – na pustej bazie, `always` – przy każdym starcie, `false` – wyłączony). |
+| `SEED_DEMO` | `true` | Automatyczne zasilenie kontenera danymi demonstracyjnymi pod prezentację projektu (`admin@axioma.pl`, konta uczniów z postępami, egzaminami i odznakami). Dla czystej bazy produkcyjnej ustaw `false`. |
 | `APP_PORT` | `5000` | Zewnętrzny port hosta mapowany na port `5000` kontenera w `docker-compose.yml`. |
 | `DOCKER_FLASK_CONFIG` | `docker` | Profil konfiguracji przekazywany do kontenera przez `docker-compose.yml`. |
 
@@ -264,19 +265,23 @@ Po uruchomieniu aplikacja jest dostępna pod adresem: **`http://127.0.0.1:5000`*
 - **Trwałość danych (Wolumeny):**
   - `axioma_instance` → `/app/instance` (baza `app.db` wraz z plikami WAL/SHM oraz automatycznie wygenerowany klucz `.secret_key`, jeśli `SECRET_KEY` nie podano w `.env`),
   - `axioma_avatars` → `/app/app/static/uploads/avatars` (uploadowane awatary użytkowników).
-- **Automatyczna inicjalizacja bazy:** Przy pierwszym starcie na pustym wolumenie `docker/init_db.py` tworzy schemat, oznacza rewizję Alembic (`stamp head`) i jednorazowo ładuje sylabus oraz katalog odznak (`seed.py`). Przy kolejnych restartach nie nadpisuje zmian wprowadzonych w panelu CMS.
+- **Automatyczna inicjalizacja bazy i kont do prezentacji:** Przy pierwszym starcie na pustym wolumenie `docker/init_db.py` tworzy schemat, oznacza rewizję Alembic (`stamp head`) i automatycznie ładuje sylabus, katalog odznak oraz kompletny zestaw kont demonstracyjnych do prezentacji projektu (`SEED_DEMO=true`). Przy kolejnych restartach nie nadpisuje wprowadzonych danych.
 - **Healthcheck:** Kontener udostępnia endpoint `/healthz` weryfikujący działanie aplikacji oraz bazy danych.
 
-### Inicjalizacja konta administratora i danych demo w kontenerze:
-Przy pierwszym starcie kontener ładuje czystą strukturę programu nauczania. Aby zasilić bazę kontem administratora i danymi demonstracyjnymi w uruchomionym kontenerze, wykonaj polecenie:
+### Gotowe konta do prezentacji w kontenerze:
+Zaraz po uruchomieniu kontenera dostępne są gotowe konta testowe:
+- **Konto Administratora (pełny panel CMS i zarządzanie użytkownikami):**
+  - **E-mail:** `admin@axioma.pl`
+  - **Hasło:** `Admin123!`
+- **Konto Ucznia (Prymus – bogata historia 30+ prób z 7 dni, wykresy, 12 odznak, zdany egzamin 90%, wskazówki AI):**
+  - **E-mail:** `anna.kowalska@axioma.pl`
+  - **Hasło:** `Student123!`
+- **Konta dodatkowe:** `jan.nowak@axioma.pl` (Średni), `piotr.zielinski@axioma.pl` (Początkujący), `kamil.zablokowany@axioma.pl` (Zablokowany – do prezentacji moderacji w panelu admina). Wszystkie z hasłem `Student123!`.
 
-```bash
-docker compose exec web python seed_demo.py
-```
-
-Po załadowaniu danych demonstracyjnych dostępne są dane logowania:
-- **E-mail:** `admin@axioma.pl`
-- **Hasło:** `Admin123!`
+> **Wskazówka:** Jeśli chcesz zresetować lub odświeżyć konta demo w działającym kontenerze, wykonaj polecenie:
+> ```bash
+> docker compose exec web python seed_demo.py --clean-demo
+> ```
 
 ---
 
